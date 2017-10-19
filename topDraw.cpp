@@ -105,7 +105,7 @@
 	float ly2 = 0.78;
 
 	const int StepNum = 1;//Step Num total:5
-	const int nVariable = 1;//number of Variable 
+	const int nVariable = 2;//number of Variable 
 	const int nChannel = 1;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
@@ -391,14 +391,15 @@
 
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_RealData[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
+					histo_RealData[NVar][NStep][nCh]->Scale(1,"width");//binNormalize
 				}
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC >= 0 && nMC <= 2)hs[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);//MC
 				}
-				hs[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);
 
 				hs[NVar][NStep][nCh]->Add(histo_RealData[NVar][NStep][nCh]);//data
