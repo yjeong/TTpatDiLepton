@@ -88,8 +88,8 @@
 	float lx2 = 0.95;
 	float ly2 = 0.86;
 
-	const int StepNum = 1;//Step Num total:5
-	const int nVariable = 2;//number of Variable 
+	const int StepNum = 5;//Step Num total:5
+	const int nVariable = 5;//number of Variable 
 	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
@@ -126,9 +126,9 @@
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	TString Variable[] = {"dilep.M()","nbjet"};//==================================variable
+	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet"};//==================================variable
 
-	TString Step_Cut[] = {"step>=1","step>=2","step>=3","step>=4","step>=5","step>=6"};
+	TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
 
 	TString TCut_base;
 	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
@@ -145,25 +145,25 @@
 	//weight_cut = "*mueffweight";//bad
 	//weight_cut = "*genweight*eleffweight";
 
-	TString Advanced_cut[] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
+	TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 
-	TString tt_others[] = {"&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_signal[] = {"&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&& (gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_signal[nChannel] = {"&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&& (gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
-	TString Step_txt[] = {"step1","step2","step3","step4","step5","step6"};
+	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 
-	TString Ytitle[] = {"Events / 5 GeV","Events"};//=====================================variable
-	TString Xtitle[] = {"M(ll) [GeV]","b Jet Multiplicity"};//========================================variable
+	TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events / 10 GeV","Events","Events"};//=====================================variable
+	TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Missing Et [GeV]","Jet Multiplicity","b Jet Multiplicity"};//========================================variable
 
-	TString Channel_Cut[] = {"&&channel","&&channel==1","&&channel==2","&&channel==3"};//Dilepton,MuEl,ElEl,MuMu;
-	TString Channel_txt[] = {"Dilepton","MuEl","ElEl","MuMu"};
+	TString Channel_Cut[nChannel] = {"&&channel","&&channel==1","&&channel==2","&&channel==3"};//Dilepton,MuEl,ElEl,MuMu;
+	TString Channel_txt[nChannel] = {"Dilepton","MuEl","ElEl","MuMu"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
 	const int Sample_Num = 13;//=======================================check
 	TString Sample_name[Sample_Num] = {"TT_powheg","TT_powheg","WJets","SingleTbar_tW","SingleTop_tW","ZZ","WW","WZ","DYJets","DYJets_10to50","MuonEG_Run2016","DoubleEG_Run2016","DoubleMuon_Run2016"};//===============================check
 
-	TString Legend_Name[] = {"t#bar{t}-signal (visible)","t#bar{t}-others","W+Jets","Single Top","Single Top","Diboson","Diboson","Diboson","Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}"};//===============================check
+	TString Legend_Name[Sample_Num] = {"t#bar{t}-signal (visible)","t#bar{t}-others","W+Jets","Single Top","Single Top","Diboson","Diboson","Diboson","Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}"};//===============================check
 
 	TFile *tfile[Sample_Num];
 
@@ -183,12 +183,14 @@
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
+	float nbin[nVariable] = {70,60,20,10,6};//===================================variable
+	float xmin[nVariable] = {0,20,0,0,0};//====================================variable
+	float xmax[nVariable] = {70,320,200,10,6};//====================================variable
+	float ymin[nVariable] = {300,300,400,100,100};//====================================variable
+
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
 			for(int NStep = 0; NStep < StepNum; NStep++){
-				float nbin[] = {60,6};//===================================variable
-				float xmin[] = {20,0};//====================================variable
-				float xmax[] = {320,6};//====================================variable
 				float size = 0.8;
 				int ttsignal_c = 2;
 				int ttothers_c = 906;
@@ -420,7 +422,7 @@
 				double ymax = 0;
 				ymax = hs[NVar][NStep][nCh]->GetMaximum();
 				hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
-				hs[NVar][NStep][nCh]->SetMinimum(50);
+				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				hs[NVar][NStep][nCh]->Draw();
 				hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				canv_[NVar][NStep][nCh]->Modified();
