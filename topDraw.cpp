@@ -7,51 +7,35 @@
 	  gStyle->SetCanvasDefX(0);//POsition on screen
 	  gStyle->SetCanvasDefY(0);*/
 
+	gStyle->SetPadLeftMargin(0.12);
+	gStyle->SetPadRightMargin(0.02);
+	gStyle->SetPadTopMargin(0.07);
+	gStyle->SetPadBottomMargin(0.1);
 	gStyle->SetPadBorderMode(0);
-	gStyle->SetPadBorderSize(1);
-	gStyle->SetPadColor(kWhite);
-	gStyle->SetGridColor(0);
-	gStyle->SetGridStyle(3);
-	gStyle->SetGridWidth(1);
+
+	gStyle->SetLabelColor(1, "XYZ");
+	gStyle->SetLabelFont(42, "XYZ");
+	gStyle->SetLabelOffset(0.007, "XYZ");
+	gStyle->SetLabelSize(0.05, "XYZ");
+
+	gStyle->SetTitleColor(1, "XYZ");
+	gStyle->SetTitleFont(42, "XYZ");
+	gStyle->SetTitleSize(0.07, "X");
+	gStyle->SetTitleSize(0.06, "Y");
+	gStyle->SetTitleXOffset(1.1);
+	gStyle->SetTitleYOffset(0.9);
+
+	gStyle->SetAxisColor(1, "XYZ");
+	gStyle->SetTickLength(0.03, "XYZ");
+	gStyle->SetNdivisions(510, "XYZ");
+	gStyle->SetPadTickX(1);  // To get tick marks on the opposite side of the frame
+	gStyle->SetPadTickY(1);
 
 	gStyle->SetFrameBorderMode(0);
 	gStyle->SetFrameBorderSize(1);
-	gStyle->SetFrameFillColor(0);
-	gStyle->SetFrameFillStyle(0);
-	gStyle->SetFrameLineColor(1);
-	gStyle->SetFrameLineStyle(1);
-	gStyle->SetFrameLineWidth(1);
-
-	gStyle->SetHistLineColor(1);
-	gStyle->SetHistLineStyle(0);
-	gStyle->SetHistLineWidth(1);
-	gStyle->SetEndErrorSize(2);
-
-	gStyle->SetOptFit(1);
-	gStyle->SetFitFormat("5.4g");
-	gStyle->SetFuncColor(2);
-	gStyle->SetFuncStyle(1);
-	gStyle->SetFuncWidth(1);
-
-	gStyle->SetOptFile(0);
-	gStyle->SetStatColor(kWhite);
-	gStyle->SetStatFont(42);
-	gStyle->SetStatFontSize(0.025);
-	gStyle->SetStatTextColor(1);
-	gStyle->SetStatFormat("6.4g");
-	gStyle->SetStatBorderSize(1);
-	gStyle->SetStatH(0.1);
-	gStyle->SetStatW(0.15);
-
-	/*gStyle->SetPadTopMargin(0.05);
-	  gStyle->SetPadBottomMargin(0.13);
-	  gStyle->SetPadLeftMargin(0.16);
-	  gStyle->SetPadRightMargin(0.02);*/
-
-	gStyle->SetPaperSize(20.,20.);
-	gStyle->SetHatchesLineWidth(5);
-	gStyle->SetHatchesSpacing(0.05);
-
+	gStyle->SetCanvasBorderMode(0);
+	gStyle->SetGridStyle(3);
+	gStyle->SetGridWidth(1);
 
 	//---------------------------------------------------
 
@@ -86,27 +70,27 @@
 
 
 	//-----------------------------------Coordinate of CMS Simulation------------------------------------------------------------
-	float x_1 = 0.1; //right top side x_1 = 0.73
-	const float y_1 = 0.94; //right top side y_1 = 0.84
+	float x_1 = 0.12; //right top side x_1 = 0.73
+	const float y_1 = 0.97; //right top side y_1 = 0.84
 	float x_2 = x_1+0.095; //right top side y_2 = y_1-0.07
 	float y_2 = y_1-0.005;
 	//------------------------------------Coordinate of first LatexBox---------------------------------------
-	float xx_1 = 0.15;
-	float yy_1 = 0.80;
+	float xx_1 = 0.18;
+	float yy_1 = 0.83;
 	//--------------------------------------Set Maximum histo_TTTT[NVar][NStep][nCh]---------------------------------
 	//float ymin_1 = 0;
 	//-----------------------------------------ExtraText---------------------------------------
-	float tx = 0.9;
-	float ty = 0.94;
+	float tx = 0.98;
+	float ty = 0.97;
 	//-------------------------Legend coordinate--------------------
-	float lx1 = 0.62;
-	float ly1 = 0.51;
-	float lx2 = 0.94;
-	float ly2 = 0.78;
+	float lx1 = 0.65;
+	float ly1 = 0.59;
+	float lx2 = 0.95;
+	float ly2 = 0.86;
 
 	const int StepNum = 1;//Step Num total:5
-	const int nVariable = 2;//number of Variable 
-	const int nChannel = 1;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
+	const int nVariable = 4;//number of Variable 
+	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
 	const int nMonteCal = 10;
@@ -126,14 +110,21 @@
 
 	THStack *hs[StepNum][nVariable][nChannel];
 
+	TH1F *histo_MC[StepNum][nVariable][nChannel];
+	TH1F *histo_Data[StepNum][nVariable][nChannel];
+	TH1F *histo_Ratio[StepNum][nVariable][nChannel];
+
 	//-----------------------------------------------------------
 
 	TCanvas *canv_[StepNum][nVariable][nChannel];
+	TPad *plotpad_[StepNum][nVariable][nChannel];
+	TPad *ratiopad_[StepNum][nVariable][nChannel];
 	TLegend *l_[StepNum][nVariable][nChannel];
 
 	TString PATH_samples;
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/cms/scratch/yjeong/";//KISTI
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
@@ -185,6 +176,12 @@
 		tfile[i] = new TFile(PATH_samples+Sample_name[i]+".root");
 	}
 
+	/*TH1D *hReWeighting[Sample_Num];
+	double PileUpReWeighting[Sample_Num];
+	for(int i = 0; i < Sample_Num; i++){
+		hReWeighting[i] = (TH1D*)tfile[i]->Get("cattree/nevents");
+	}*/
+
 	TTree *tree[Sample_Num];
 	TH1D *hnevents[Sample_Num];
 	double totevents[Sample_Num];
@@ -200,39 +197,50 @@
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
 			for(int NStep = 0; NStep < StepNum; NStep++){
-				float nbin[] = {60,60,20,10};//===================================variable
+				float nbin[] = {70,60,20,10};//===================================variable
 				float xmin[] = {0,20,0,0};//====================================variable
 				float xmax[] = {70,320,200,10};//====================================variable
 				float size = 0.8;
 				int ttsignal_c = 2;
 				int ttothers_c = 906;
 				int wjets_c = 3;
-				int STop_c = 46;
+				int STop_c = 42;
 				int Diboson_c = 7;
 				int Z_pshy_c = 4;
 				int data_c = 1;
 
-				canv_[NVar][NStep][nCh] = new TCanvas();
-				//if(NVar>0)canv_[NVar][NStep][nCh]->SetLogy();
-				canv_[NVar][NStep][nCh]->SetLogy();
-				canv_[NVar][NStep][nCh]->SetFillColor(0);
-				canv_[NVar][NStep][nCh]->SetBorderMode(2);
-				canv_[NVar][NStep][nCh]->SetFrameFillStyle(3);
-				canv_[NVar][NStep][nCh]->SetFrameBorderMode(0);
-				canv_[NVar][NStep][nCh]->SetTickx(1);
-				canv_[NVar][NStep][nCh]->SetTicky(1);
-				canv_[NVar][NStep][nCh]->Update();
+				canv_[NVar][NStep][nCh] = new TCanvas(Form("Canv_%d_%d_%d",NVar,NStep,nCh),Form(""),800,800);
+				/*canv_[NVar][NStep][nCh]->SetLogy();
+				  canv_[NVar][NStep][nCh]->SetFillColor(0);
+				  canv_[NVar][NStep][nCh]->SetBorderMode(2);
+				  canv_[NVar][NStep][nCh]->SetFrameFillStyle(3);
+				  canv_[NVar][NStep][nCh]->SetFrameBorderMode(0);
+				  canv_[NVar][NStep][nCh]->SetTickx(1);
+				  canv_[NVar][NStep][nCh]->SetTicky(1);
+				  canv_[NVar][NStep][nCh]->Update();*/
 				canv_[NVar][NStep][nCh]->RedrawAxis();
-				canv_[NVar][NStep][nCh]->GetFrame()->Draw();
+				//canv_[NVar][NStep][nCh]->GetFrame()->Draw();
 
 				l_[NVar][NStep][nCh] = new TLegend(lx1,ly1,lx2,ly2);
 				l_[NVar][NStep][nCh]->SetFillColor(0);
 				l_[NVar][NStep][nCh]->SetLineColor(0);
 				l_[NVar][NStep][nCh]->SetLineStyle(kSolid);
 				l_[NVar][NStep][nCh]->SetLineWidth(1);
-				l_[NVar][NStep][nCh]->SetFillStyle(1);
-				l_[NVar][NStep][nCh]->SetTextFont(2);
+				l_[NVar][NStep][nCh]->SetFillStyle(1001);
+				l_[NVar][NStep][nCh]->SetTextFont(42);
 				l_[NVar][NStep][nCh]->SetTextSize(0.035);
+
+				plotpad_[NVar][NStep][nCh] = new TPad(Form("title_%d_%d_%d",NVar,NStep,nCh),Form(""),0.02,0.3,0.98,0.98);//x1,y1,x2,y2
+				ratiopad_[NVar][NStep][nCh] = new TPad(Form("ratiotitle_%d_%d_%d",NVar,NStep,nCh),Form(""),0.02,0.1,0.98,0.3);
+
+				plotpad_[NVar][NStep][nCh]->Draw();
+				ratiopad_[NVar][NStep][nCh]->Draw();
+				plotpad_[NVar][NStep][nCh]->cd();
+
+				plotpad_[NVar][NStep][nCh]->SetLogy();
+				plotpad_[NVar][NStep][nCh]->RedrawAxis();
+
+				gPad->SetBottomMargin(0);
 
 				histo_SingleTop[NVar][NStep][nCh] = new TH1F(Form("histo_SingleTop_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_Diboson[NVar][NStep][nCh] = new TH1F(Form("histo_Diboson_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
@@ -275,7 +283,6 @@
 					tree[nMC]->Project(Form("histo_MonteCal_gen_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar]);
 
 				}
-
 				histo_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				histo_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
 				histo_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
@@ -306,18 +313,26 @@
 				const double lumi = 35.9*1000;//pb-1
 				//const double lumi = 2.22*1000;//pb-1
 				cout<<""<<endl;
-				cout<<"---------------------------------------"<<Channel_txt[nCh]<<", "<<Step_txt[NStep]<<"-------------------------------------"<<endl;
+				cout<<"---------------------------------------"<<Channel_txt[nCh]<<", "<<Variable[NVar]<<", "<<Step_txt[NStep]<<"-------------------------------------"<<endl;
 				cout<<"lumi : "<<lumi<<" pb-1"<<endl;
 				cout<<""<<endl;
 				cout<<""<<endl;
 
 				double MonteCal_xsec[] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
 
+				////////////////////////////////////////pileup reweighting///////////////////////////////////
 				/////////////////////////////////////////////// MonteCals ///////////////////////////////////////////////////
+
+				cout<<"MC Vertex events number"<<endl;
+				//double MC_BinEv = 0;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
+					//histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(1/histo_MonteCal[NVar][NStep][nCh][nMC]->GetEntries());
+					//cout<< histo_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(10) << endl;
+					//MC_BinEv += histo_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(10);//0.00799375
 				}
+				//cout<< MC_BinEv << endl;
 
 				double MonteCal_ev = 0;
 				double SingleTop_ev = 0;
@@ -335,7 +350,6 @@
 						histo_Zr[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
 					}
 				}
-
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
@@ -389,10 +403,18 @@
 				//int data_err = histo_RealData[NVar][NStep][nCh]->GetEntries();
 				//histo_RealData[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(data_err));
 
+				///////////////////////////////////////////////pileup reweighting//////////////////////////////////////
+
+				cout<<"Data Vertex events number"<<endl;
+
+				double Data_BinEv = 0;
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_RealData[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
 					histo_RealData[NVar][NStep][nCh]->Scale(1,"width");//binNormalize
+					//histo_RealData[NVar][NStep][nCh]->Scale(1/histo_RealData[NVar][NStep][nCh]->GetEntries());
+					//Data_BinEv += histo_RealData[NVar][NStep][nCh]->GetBinContent(10);//0.0820553
 				}
+				//cout << Data_BinEv << endl;
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -436,16 +458,44 @@
 				hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
 				hs[NVar][NStep][nCh]->SetMinimum(1000);
 				hs[NVar][NStep][nCh]->Draw();
-				//histo_RealData[NVar][NStep][nCh]->Draw("esamex0");
-				hs[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
 				hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				//hs[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
 				canv_[NVar][NStep][nCh]->Modified();
 
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
 				lt2.DrawLatex(x_1,y_1,"CMS");
 				lt3.DrawLatex(x_2,y_2,"Preliminary");
-				lt4.DrawLatex(tx,ty,"35.9 fb^{-1},#sqrt{s} = 13 TeV");
+				lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				l_[NVar][NStep][nCh]->Draw();
+
+				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					histo_MC[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
+				}
+				
+				histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+
+				histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_MC[NVar][NStep][nCh],1,1,"b");
+
+				ratiopad_[NVar][NStep][nCh]->cd();
+				gPad->SetTopMargin(0);
+				gPad->SetBottomMargin(0);
+				ratiopad_[NVar][NStep][nCh]->SetGridy();
+				histo_Ratio[NVar][NStep][nCh]->SetMarkerStyle(20);
+				histo_Ratio[NVar][NStep][nCh]->SetMarkerSize(1.2);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitle("Data / MC");
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetLabelSize(0.11);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
+				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
+				//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.8,1.2,"y");
+				histo_Ratio[NVar][NStep][nCh]->Draw("e");
+
+				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
+				  rp->Draw();
+				  canv_[NVar][NStep][nCh]->Update();*/
+				canv_[NVar][NStep][nCh]->cd();
 				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+"TtbarDileptonAnalyzer_"+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
 			}
 		}
