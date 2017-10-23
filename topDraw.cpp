@@ -461,7 +461,7 @@
 				  rp->Draw();
 				  canv_[NVar][NStep][nCh]->Update();*/
 				canv_[NVar][NStep][nCh]->cd();
-				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+"TtbarDileptonAnalyzer_"+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
+				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
 			}
 		}
 	}
