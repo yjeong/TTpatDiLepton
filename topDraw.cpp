@@ -405,7 +405,6 @@
 				hs[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);
 
-				//hs[NVar][NStep][nCh]->Add(histo_RealData[NVar][NStep][nCh]);//data
 				double revents = 0;
 				revents += histo_RealData[NVar][NStep][nCh]->GetEntries();
 
