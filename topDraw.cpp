@@ -108,7 +108,6 @@
 	THStack *hs[StepNum][nVariable][nChannel];
 
 	TH1F *histo_MC[StepNum][nVariable][nChannel];
-	TH1F *histo_Data[StepNum][nVariable][nChannel];
 	TH1F *histo_Ratio[StepNum][nVariable][nChannel];
 
 	//-----------------------------------------------------------
@@ -188,8 +187,8 @@
 	float nbin[nVariable] = {70,60,20,10,6};//===================================variable
 	float xmin[nVariable] = {0,20,0,0,0};//====================================variable
 	float xmax[nVariable] = {70,320,200,10,6};//====================================variable
-	float ymin[nVariable] = {300,300,400,100,100};//====================================variable
-	//float ymin[nVariable] = {0.01,300,400,100,100};//====================================variable
+	//float ymin[nVariable] = {300,300,400,100,100};//====================================variable
+	float ymin[nVariable] = {0.01,300,400,100,100};//====================================variable
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -406,7 +405,7 @@
 				hs[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);
 
-				hs[NVar][NStep][nCh]->Add(histo_RealData[NVar][NStep][nCh]);//data
+				//hs[NVar][NStep][nCh]->Add(histo_RealData[NVar][NStep][nCh]);//data
 				double revents = 0;
 				revents += histo_RealData[NVar][NStep][nCh]->GetEntries();
 
@@ -441,6 +440,7 @@
 				hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
 				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				hs[NVar][NStep][nCh]->Draw();
+				histo_RealData[NVar][NStep][nCh]->Draw("same");
 				hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				canv_[NVar][NStep][nCh]->Modified();
 
@@ -482,7 +482,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.8,1.2,"y");
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(-0.1,1,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
