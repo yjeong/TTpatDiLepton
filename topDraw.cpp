@@ -187,8 +187,8 @@
 	float nbin[nVariable] = {70,60,20,10,6};//===================================variable
 	float xmin[nVariable] = {0,20,0,0,0};//====================================variable
 	float xmax[nVariable] = {70,320,200,10,6};//====================================variable
-	//float ymin[nVariable] = {300,300,400,100,100};//====================================variable
-	float ymin[nVariable] = {0.01,300,400,100,100};//====================================variable
+	float ymin[nVariable] = {300,300,400,100,100};//====================================variable
+	//float ymin[nVariable] = {0.01,300,400,100,100};//====================================variable
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -238,12 +238,14 @@
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_signal[nCh]+Advanced_cut[NStep]);
 					}
+
 					//cout<<"1"<<endl;
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]);
 						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]+Form("&& gen_partonMode==%d",nCh));
 					}
+
 					//cout<<"2"<<endl;
 					if(nMC>1){//etc (except tt-powheg)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
@@ -293,11 +295,7 @@
 
 				/////////////////////////////////////////////// MonteCals ///////////////////////////////////////////////////
 
-				const int n = 70;
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					double nev = 0;
-					nev = histo_MonteCal[NVar][NStep][nCh][nMC]->GetEntries();
-					//histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(1/nev);
 					histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 				}
 
@@ -339,6 +337,7 @@
 					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
 					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
 				}
+
 				//--------------------------------------------Print-----------------------------------------------
 
 				int Int_MonteCal[] = {0,};
@@ -380,21 +379,27 @@
 
 				//histo_RealData[NVar][NStep][nCh]->SetLineStyle(2);
 
-				/*double nev = 0;
-				for(int nReal = 0; nReal < nRealData; nReal++){
-					nev = histo_nRealData[NVar][NStep][nCh][nReal]->GetEntries();
-					histo_nRealData[NVar][NStep][nCh][nReal]->Scale(1/nev);
-				}*/
-
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_RealData[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
 				}
 
-				double DataBin_ev[n] = {0,};
-				for(int i = 0; i < 70; i++){
-					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
-					//cout<<"Data:: "<<DataBin_ev[i]<<endl;
+				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					if(nMC >= 0 && nMC <= 2)histo_MC[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
 				}
+
+				histo_MC[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
+				histo_MC[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
+				histo_MC[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);
+				histo_MC[NVar][NStep][nCh]->SetLineWidth(2);
+
+				double nev_Data = 1;
+				nev_Data = histo_RealData[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
+				histo_RealData[NVar][NStep][nCh]->Scale(1/nev_Data);
+
+				double nev_MC = 1;
+				nev_MC = histo_MC[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
+				histo_MC[NVar][NStep][nCh]->Scale(1/nev_MC);
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -435,12 +440,16 @@
 				l_[NVar][NStep][nCh]->AddEntry(histo_RealData[NVar][NStep][nCh],"Data ", "lp");
 
 				double ymax = 0;
-				ymax = hs[NVar][NStep][nCh]->GetMaximum();
-				hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
-				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-				hs[NVar][NStep][nCh]->Draw();
+				/*ymax = hs[NVar][NStep][nCh]->GetMaximum();
+				  hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				  hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				  hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				  hs[NVar][NStep][nCh]->Draw();*/
+				ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
+				histo_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				histo_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				histo_MC[NVar][NStep][nCh]->Draw();
 				histo_RealData[NVar][NStep][nCh]->Draw("same");
-				hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				canv_[NVar][NStep][nCh]->Modified();
 
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
@@ -449,13 +458,16 @@
 				lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				l_[NVar][NStep][nCh]->Draw();
 
-				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					histo_MC[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
+				///////////////////////////////////////////// Ratio plot //////////////////////////////////////////
+
+				const int n = 70;
+				double DataBin_ev[n] = {0,};
+				for(int i = 0; i < n; i++){
+					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
 				double MCBin_ev[n] = {0,};
-				for(int i = 0; i < 70; i++){
+				for(int i = 0; i < n; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
@@ -481,7 +493,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(-0.1,1,"y");
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
