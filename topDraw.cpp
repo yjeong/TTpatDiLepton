@@ -117,6 +117,7 @@
 	TH1F *histo_nReweight_Diboson[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Zr[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_MC[StepNum][nVariable][nChannel];
+	TH1F *histo_nReweight_Data[StepNum][nVariable][nChannel];
 
 	//-----------------------------------------------------------
 
@@ -192,11 +193,11 @@
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
-	float nbin[nVariable] = {70,60,20,10,6};//===================================variable
-	float xmin[nVariable] = {0,20,0,0,0};//====================================variable
-	float xmax[nVariable] = {70,320,200,10,6};//====================================variable
-	float ymin[nVariable] = {300,300,400,100,100};//====================================variable
-	//float ymin[nVariable] = {0.01,300,400,100,100};//====================================variable
+	int nbin[] = {70,60,20,10,6};//===================================variable
+	int xmin[] = {0,20,0,0,0};//====================================variable
+	int xmax[] = {70,320,200,10,6};//====================================variable
+	//int ymin[] = {300,300,400,100,100};//====================================variable
+	float ymin[nVariable] = {0.001,300,400,100,100};//====================================variable
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -247,19 +248,16 @@
 						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_signal[nCh]+Advanced_cut[NStep]);
 					}
 
-					//cout<<"1"<<endl;
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]);
 						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]+Form("&& gen_partonMode==%d",nCh));
 					}
 
-					//cout<<"2"<<endl;
 					if(nMC>1){//etc (except tt-powheg)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+Advanced_cut[NStep]);
 					}
-					//cout<<"3"<<endl;
 
 					//histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineWidth(2);
 					if(nMC == 0){//tt-signal(visible)
@@ -325,8 +323,8 @@
 				}
 
 				/*histo_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
-				histo_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-				histo_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
+				  histo_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
+				  histo_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
 				//histo_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
 				histo_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
@@ -465,19 +463,22 @@
 
 				const int n = 70;
 				double DataBin_ev[n] = {0,};
+				//double DataBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
 				double MCBin_ev[n] = {0,};
+				//double MCBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
 				double RatioBin_ev[n] = {0,};
+				//double RatioBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
-					cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
+					//cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
 				}
 
 				////////////////////////////////////////////PUeventReweighting////////////////////////////////////////
@@ -489,9 +490,13 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
-					for(int i; i < n; i++){
-						histo_nReweight[NVar][NStep][nCh][nMC]->Fill(nbin[NVar],RatioBin_ev[i]);
+					for(int i = 0; i < n; i++){
+						histo_nReweight[NVar][NStep][nCh][nMC]->Fill(i+2,RatioBin_ev[i+2]);
+						//cout<<"Reweight Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;			
+						cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
 					}
+					//cout<<"Reweight Integral: "<<histo_nReweight[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;
+					//cout<<"Reweight GetSum: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetSum()<<endl;
 					if(nMC == 0){//tt-signal(visible)
 						histo_nReweight[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
 						histo_nReweight[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
@@ -508,12 +513,14 @@
 						histo_nReweight[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
 					}
 				}
-				cout<<"1"<<endl;
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
+					cout<<Legend_Name[nMC]<<" Reweight Scaled Integral: "<<histo_nReweight[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;
+					for(int i = 0; i < n; i++){
+						//cout<<"Reweight Scaled Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;
+					}
 				}
 
-				cout<<"REweight Integral: "<<histo_nReweight[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;			
 				for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
 					if(nMC >= 3 && nMC <= 4){
 						histo_nReweight_SingleTop[NVar][NStep][nCh]->Add(histo_nReweight[NVar][NStep][nCh][nMC]);
@@ -525,7 +532,6 @@
 						histo_nReweight_Zr[NVar][NStep][nCh]->Add(histo_nReweight[NVar][NStep][nCh][nMC]);
 					}
 				}
-				cout<<"11"<<endl;
 
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
@@ -539,7 +545,6 @@
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
 				//histo_Zr[NVar][NStep][nCh]->SetLineWidth(2);
-				cout<<"2"<<endl;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
@@ -549,7 +554,6 @@
 					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
 					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
 				}
-				cout<<"3"<<endl;
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -560,49 +564,78 @@
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
 
+				//-------------------------------------------------------
+				histo_nReweight_MC[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					if(nMC >= 0 && nMC <= 2)histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight[NVar][NStep][nCh][nMC]);
+				}
+
+				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
+				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
+				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+				histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(3);
+				//---------------------------------------------------------
+
+				histo_nReweight_Data[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Data_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(data_c);
+
+				//histo_nReweight_Data[NVar][NStep][nCh]->SetLineStyle(2);
+
+				for(int nReal = 0; nReal < nRealData; nReal++){
+					histo_nReweight_Data[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
+				}
+
+				double ev_Re = 0;
+				ev_Re = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(ev_Re));
+				cout<<"data : "<<revents<<endl;
+
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineWidth(1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetFillStyle(3001);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetFillColor(14);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerStyle(20);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerSize(1.2);
+
+				//--------------------------------------------------------
+
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				cout<<"4"<<endl;
 				double ymax = 0;
 				ymax = hs[NVar][NStep][nCh]->GetMaximum();
-				cout<<"5"<<endl;
-				hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
-				cout<<"6"<<endl;
-				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-				cout<<"7"<<endl;
+				  hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
+				  hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				//hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-				cout<<"8"<<endl;
 				hs[NVar][NStep][nCh]->Draw();
-				cout<<"9"<<endl;
 
-				histo_RealData[NVar][NStep][nCh]->Draw("same");
-				cout<<"10"<<endl;
+				/*ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
+				  histo_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				  histo_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				  histo_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				  histo_MC[NVar][NStep][nCh]->Draw();*/
+
+				/*ymax = histo_nReweight_MC[NVar][NStep][nCh]->GetMaximum();
+				histo_nReweight_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				histo_nReweight_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				//histo_nReweight_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				histo_nReweight_MC[NVar][NStep][nCh]->Draw();*/
+
+				//histo_RealData[NVar][NStep][nCh]->Draw("same");
+				histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
 				canv_[NVar][NStep][nCh]->Modified();
-				cout<<"11"<<endl;
 
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
 				lt2.DrawLatex(x_1,y_1,"CMS");
 				lt3.DrawLatex(x_2,y_2,"Preliminary");
 				lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				l_[NVar][NStep][nCh]->Draw();
-
+				cout<<"2"<<endl;
 				/////////////////////////////////////////////// Ratio plot //////////////////////////////////////////
-
-				histo_nReweight_MC[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC >= 0 && nMC <= 2)histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight[NVar][NStep][nCh][nMC]);
-				}
-
-				cout<<"12"<<endl;
-				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
-				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
-				histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);
-				histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(2);
 
 				histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_nReweight_MC[NVar][NStep][nCh],1,1,"b");
-
-				cout<<"13"<<endl;
+				//histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_MC[NVar][NStep][nCh],1,1,"b");
+				cout<<"3"<<endl;
 				ratiopad_[NVar][NStep][nCh]->cd();
 				gPad->SetTopMargin(0);
 				gPad->SetBottomMargin(0);
@@ -617,8 +650,7 @@
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
 				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
-				cout<<"14"<<endl;
-
+				cout<<"4"<<endl;
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
 				  canv_[NVar][NStep][nCh]->Update();*/
@@ -627,5 +659,5 @@
 			}
 		}
 	}
-	cout<<"13TeV"<<endl;
+	cout<<"13 TeV"<<endl;
 }
