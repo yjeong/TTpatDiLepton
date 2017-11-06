@@ -136,6 +136,16 @@
 
 	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet"};//==================================variable
 
+	TString Var_int[] = {"nvertex","njet","nbjet"};
+	TString Var_float[] = {"dilep.M()","met"};
+	int nvertex, njet, nbjet;
+	float mllpm, met;
+
+	int Var_int_size = sizeof(Var_int)/sizeof(Var_int[0]);
+	int Var_float_size = sizeof(Var_float)/sizeof(Var_float[0]);
+	int var_int[100][100];
+	float var_float[100][100];
+
 	TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
 
 	TString TCut_base;
@@ -190,6 +200,10 @@
 		totevents[i] = hnevents[i]->Integral();
 		if(i!=1&&i<=10)cout<<Sample_name[i]<<": "<<totevents[i]<<endl;//except tt-others
 		if(i>10)cout<<Sample_name[i]<<": "<<++totevents[i]<<endl;
+	}
+
+	for(int i = 0; i < Sample_Num; i++){
+		tree[i]->SetBranchAddress("nvertex",&nvertex);
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -463,19 +477,16 @@
 
 				const int n = 70;
 				double DataBin_ev[n] = {0,};
-				//double DataBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
 				double MCBin_ev[n] = {0,};
-				//double MCBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
 				double RatioBin_ev[n] = {0,};
-				//double RatioBin_ev = 1;
 				for(int i = 0; i < n; i++){
 					RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
 					//cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
@@ -489,11 +500,16 @@
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-
-					for(int i = 0; i < n; i++){
-						histo_nReweight[NVar][NStep][nCh][nMC]->Fill(i+2,RatioBin_ev[i+2]);
-						//cout<<"Reweight Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;			
-						cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
+					for(int S = 0; S < Sample_Num; S++){
+						for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
+							tree[S]->GetEntry(nev);
+							for(int i = 0; i < n; i++){
+								if(i<=1)histo_nReweight[NVar][NStep][nCh][nMC]->Fill(nvertex,1);
+								if(i>1)histo_nReweight[NVar][NStep][nCh][nMC]->Fill(nvertex,RatioBin_ev[i]);
+								//cout<<"Reweight Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;			
+								cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
+							}
+						}
 					}
 					//cout<<"Reweight Integral: "<<histo_nReweight[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;
 					//cout<<"Reweight GetSum: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetSum()<<endl;
@@ -603,8 +619,8 @@
 
 				double ymax = 0;
 				ymax = hs[NVar][NStep][nCh]->GetMaximum();
-				  hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
-				  hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
+				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				//hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				hs[NVar][NStep][nCh]->Draw();
 
@@ -615,8 +631,8 @@
 				  histo_MC[NVar][NStep][nCh]->Draw();*/
 
 				/*ymax = histo_nReweight_MC[NVar][NStep][nCh]->GetMaximum();
-				histo_nReweight_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
-				histo_nReweight_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				  histo_nReweight_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				  histo_nReweight_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				//histo_nReweight_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				histo_nReweight_MC[NVar][NStep][nCh]->Draw();*/
 
@@ -629,13 +645,11 @@
 				lt3.DrawLatex(x_2,y_2,"Preliminary");
 				lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				l_[NVar][NStep][nCh]->Draw();
-				cout<<"2"<<endl;
 				/////////////////////////////////////////////// Ratio plot //////////////////////////////////////////
 
 				histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_nReweight_MC[NVar][NStep][nCh],1,1,"b");
 				//histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_MC[NVar][NStep][nCh],1,1,"b");
-				cout<<"3"<<endl;
 				ratiopad_[NVar][NStep][nCh]->cd();
 				gPad->SetTopMargin(0);
 				gPad->SetBottomMargin(0);
@@ -650,7 +664,6 @@
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
 				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
-				cout<<"4"<<endl;
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
 				  canv_[NVar][NStep][nCh]->Update();*/
