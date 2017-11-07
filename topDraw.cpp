@@ -364,16 +364,17 @@
 				int Int_SingleTop = 0;
 				int Int_Diboson = 0;
 				int Int_Zgamma = 0;
-				int total = 0;
 				int total_1 = 0;
 				int total_2 = 0;
-				int bkg = 0 ;
+				int total;
+				int bkg;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC>=0 && nMC<=2){
+					if(nMC<=2){
 						MonteCal_ev = histo_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
 						Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
 						cout<<Legend_Name[nMC]<<" yield : "<<Int_MonteCal[nMC]<<", err : "<<sqrt(MonteCal_ev)<<endl;
+						total_1 += Int_MonteCal[nMC];
 					}
 					if(nMC==4){
 						SingleTop_ev = histo_SingleTop[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
@@ -391,6 +392,15 @@
 						cout<<Legend_Name[nMC]<<" yield : "<<Int_Zgamma<<", err : "<<sqrt(Zgamma_ev) <<endl;
 					}
 				}
+
+				total_2 = Int_SingleTop+Int_Diboson+Int_Zgamma;
+				total = total_1+total_2;
+				bkg = total-Int_MonteCal[0];
+
+				cout<<""<<endl;
+				cout<<"bkg : "<<bkg<<endl;
+				cout<<"total : "<<total<<endl;
+				cout<<""<<endl;
 
 				////////////////////////////////////////////////// RealData ///////////////////////////////////////////////////
 
@@ -438,18 +448,6 @@
 				histo_RealData[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(ev));
 				cout<<"data : "<<revents<<endl;
 
-				for(int nMC = 0; nMC < nMonteCal-7; nMC++){
-					total_1 += Int_MonteCal[nMC];
-					total_2 = Int_SingleTop+Int_Diboson+Int_Zgamma;
-					total = total_1+total_2;
-					bkg = total-Int_MonteCal[0];
-				}
-
-				cout<<""<<endl;
-				cout<<"bkg : "<<bkg<<endl;
-				cout<<"total : "<<total<<endl;
-				cout<<""<<endl;
-
 				histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
 				histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
 				histo_RealData[NVar][NStep][nCh]->SetFillStyle(3001);
@@ -475,19 +473,18 @@
 				  lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				  l_[NVar][NStep][nCh]->Draw();*/
 
-				const int n = 70;
-				double DataBin_ev[n] = {0,};
-				for(int i = 0; i < n; i++){
+				double DataBin_ev[] = {0,};
+				for(int i = 0; i < nbin[NVar]; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double MCBin_ev[n] = {0,};
-				for(int i = 0; i < n; i++){
+				double MCBin_ev[] = {0,};
+				for(int i = 0; i < nbin[NVar]; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double RatioBin_ev[n] = {0,};
-				for(int i = 0; i < n; i++){
+				double RatioBin_ev[] = {0,};
+				for(int i = 0; i < nbin[NVar]; i++){
 					RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
 					//cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
 				}
@@ -501,13 +498,14 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int S = 0; S < Sample_Num; S++){
-						for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
+						//for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
+						for(int nev = 0; nev < 1000; nev++){
 							tree[S]->GetEntry(nev);
-							for(int i = 0; i < n; i++){
+							for(int i = 0; i < nbin[NVar]; i++){
 								if(i<=1)histo_nReweight[NVar][NStep][nCh][nMC]->Fill(nvertex,1);
 								if(i>1)histo_nReweight[NVar][NStep][nCh][nMC]->Fill(nvertex,RatioBin_ev[i]);
 								//cout<<"Reweight Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;			
-								cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
+								//cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
 							}
 						}
 					}
@@ -532,9 +530,9 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 					cout<<Legend_Name[nMC]<<" Reweight Scaled Integral: "<<histo_nReweight[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;
-					for(int i = 0; i < n; i++){
+					/*for(int i = 0; i < nbin[NVar]; i++){
 						//cout<<"Reweight Scaled Bin: "<<histo_nReweight[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;
-					}
+					}*/
 				}
 
 				for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
