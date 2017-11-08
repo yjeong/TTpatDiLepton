@@ -456,8 +456,8 @@
 				ev = histo_RealData[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
 				histo_RealData[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(ev));
 				cout<<"data : "<<revents<<endl;
-				cout<<""<<revents<<endl;
-				cout<<""<<revents<<endl;
+				cout<<""<<endl;
+				cout<<""<<endl;
 
 				histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
 				histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
@@ -509,8 +509,8 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int S = 0; S < Sample_Num; S++){
-						//for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
-						for(int nev = 0; nev < 10000; nev++){
+						for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
+						//for(int nev = 0; nev < 10000; nev++){
 							tree[S]->GetEntry(nev);
 							if(dilep == NULL) continue;
 							//nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
@@ -672,7 +672,7 @@
 					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
 					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
 					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
-					histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(3);
+					histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(2);
 
 					histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					histo_Ratio[NVar][NStep][nCh]->Divide(histo_RealData[NVar][NStep][nCh],histo_nReweight_MC[NVar][NStep][nCh],1,1,"b");
