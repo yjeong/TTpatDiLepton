@@ -139,7 +139,7 @@
 	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet"};//==================================variable
 
 	TString Var_int[] = {"nvertex","njet","nbjet"};
-	TString Var_float[] = {"dilep.M()","met"};
+	TString Var_float[] = {"met"};
 	int step;
 	int nvertex, njet, nbjet;
 	float mllpm, met;
