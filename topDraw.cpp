@@ -510,14 +510,14 @@
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int tr = 0; tr < Sample_Num; tr++){
 						for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-						//for(int nev = 0; nev < 10000; nev++){
+							//for(int nev = 0; nev < 10000; nev++){
 							tree[tr]->GetEntry(nev);
 							if(dilep == NULL) continue;
-							//nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
-							//mllpm = var_float[1][0], met = var_float[2][0];*/
+							/*nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
+							  mllpm = var_float[1][0], met = var_float[2][0];*/
 
 							single_cut_var[0] = nvertex; single_cut_var[1] = dilep->M(); single_cut_var[2] = met;
-							single_cut_var[3] = njet; single_cut_var[4] = nbjet;
+							single_cut_var[3] = njet; single_cut_var[4] = nbjet;//================================>check
 
 							for(int i = 0; i < nbin[NVar]; i++){
 								if(NStep==0 && step>=1){
@@ -544,23 +544,23 @@
 								//cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
 							}
 						}
-					}
+						}
 
-					if(nMC == 0){//tt-signal(visible)
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
-					}
-					if(nMC == 1){//tt-others
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
-					}
-					if(nMC == 2){//w+jets
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
-					}
+						if(nMC == 0){//tt-signal(visible)
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
+						}
+						if(nMC == 1){//tt-others
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
+						}
+						if(nMC == 2){//w+jets
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
+						}
 					}
 					for(int nMC = 0; nMC < nMonteCal; nMC++){
 						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
