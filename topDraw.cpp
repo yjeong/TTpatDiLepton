@@ -508,8 +508,8 @@
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					for(int S = 0; S < Sample_Num; S++){
-						for(int nev = 0; nev < tree[S]->GetEntries(); nev++){
+					for(int Tree = 0; Tree < Sample_Num; Tree++){
+						for(int nev = 0; nev < tree[Tree]->GetEntries(); nev++){
 						//for(int nev = 0; nev < 10000; nev++){
 							tree[S]->GetEntry(nev);
 							if(dilep == NULL) continue;
