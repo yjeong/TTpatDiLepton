@@ -90,7 +90,7 @@
 	float ly2 = 0.86;
 
 	const int StepNum = 5;//Step Num total:5
-	const int nVariable = 5;//number of Variable 
+	const int nVariable = 6;//number of Variable 
 	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
@@ -136,7 +136,7 @@
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet"};//==================================variable
+	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet","pseudottbar.M()"};//==================================variable
 
 	TString Var_int[] = {"nvertex","njet","nbjet"};
 	TString Var_float[] = {"met"};
@@ -145,6 +145,7 @@
 	float mllpm, met;
 
 	TLorentzVector* dilep = NULL;
+	TLorentzVector* pseudottbar = NULL;
 
 	int Var_int_size = sizeof(Var_int)/sizeof(Var_int[0]);
 	int Var_float_size = sizeof(Var_float)/sizeof(Var_float[0]);
@@ -176,8 +177,8 @@
 
 	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 
-	TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events / 10 GeV","Events","Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Missing Et [GeV]","Jet Multiplicity","b Jet Multiplicity"};//========================================variable
+	TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events / 10 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
+	TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Missing Et [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
 
 	TString Channel_Cut[nChannel] = {"&&channel","&&channel==1","&&channel==2","&&channel==3"};//Dilepton,MuEl,ElEl,MuMu;
 	TString Channel_txt[nChannel] = {"Dilepton","MuEl","ElEl","MuMu"};
@@ -207,6 +208,7 @@
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
 		//for(int l1 = 0; l1 < Var_float_size; l1++) tree[i]->SetBranchAddress(Var_float[l1],var_float[l1]);
 		tree[i]->SetBranchAddress("dilep",&dilep);
+		tree[i]->SetBranchAddress("pseudottbar",&pseudottbar);
 		tree[i]->SetBranchAddress("nvertex",&nvertex);
 		tree[i]->SetBranchAddress("njet",&njet);
 		tree[i]->SetBranchAddress("met",&met);
@@ -216,10 +218,10 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	int nbin[nVariable] = {70,60,20,10,6};//===================================variable
-	int xmin[nVariable] = {0,20,0,0,0};//====================================variable
-	int xmax[nVariable] = {70,320,200,10,6};//====================================variable
-	int ymin[nVariable] = {300,300,400,100,100};//====================================variable
+	int nbin[nVariable] = {70,60,20,10,6,10};//===================================variable
+	int xmin[nVariable] = {0,20,0,0,0,300};//====================================variable
+	int xmax[nVariable] = {70,320,200,10,6,1200};//====================================variable
+	int ymin[nVariable] = {300,300,400,100,100,1100};//====================================variable
 	//float ymin[nVariable] = {0.001,300,400,100,100};//====================================variable
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
@@ -509,15 +511,15 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int tr = 0; tr < Sample_Num; tr++){
-						for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-							//for(int nev = 0; nev < 10000; nev++){
+						//for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
+						for(int nev = 0; nev < 10000; nev++){
 							tree[tr]->GetEntry(nev);
-							if(dilep == NULL) continue;
+							if(dilep == NULL && pseudottbar == NULL) continue;
 							/*nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
 							  mllpm = var_float[1][0], met = var_float[2][0];*/
 
 							single_cut_var[0] = nvertex; single_cut_var[1] = dilep->M(); single_cut_var[2] = met;
-							single_cut_var[3] = njet; single_cut_var[4] = nbjet;//================================>check
+							single_cut_var[3] = njet; single_cut_var[4] = nbjet; single_cut_var[5] = pseudottbar->M();//================================>variable
 
 							for(int i = 0; i < nbin[NVar]; i++){
 								if(NStep==0 && step>=1){
@@ -544,23 +546,23 @@
 								//cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
 							}
 						}
-						}
+					}
 
-						if(nMC == 0){//tt-signal(visible)
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
-						}
-						if(nMC == 1){//tt-others
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
-						}
-						if(nMC == 2){//w+jets
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
-							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
-						}
+					if(nMC == 0){//tt-signal(visible)
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
+					}
+					if(nMC == 1){//tt-others
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
+					}
+					if(nMC == 2){//w+jets
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
+					}
 					}
 					for(int nMC = 0; nMC < nMonteCal; nMC++){
 						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
