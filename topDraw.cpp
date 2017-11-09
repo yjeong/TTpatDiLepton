@@ -90,7 +90,7 @@
 	float ly2 = 0.86;
 
 	const int StepNum = 5;//Step Num total:5
-	const int nVariable = 6;//number of Variable 
+	const int nVariable = 1;//number of Variable 
 	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
@@ -136,22 +136,24 @@
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet","pseudottbar.M()"};//==================================variable
+	//TString Variable[nVariable] = {"nvertex","dilep.M()","met","njet","nbjet","pseudottbar.M()"};//==================================variable
+	TString Variable[nVariable] = {"met"};//==================================variable
 
-	TString Var_int[] = {"nvertex","njet","nbjet"};
+	/*TString Var_int[] = {"nvertex","njet","nbjet"};
 	TString Var_float[] = {"met"};
+
+	int Var_int_size = sizeof(Var_int)/sizeof(Var_int[0]);
+	int Var_float_size = sizeof(Var_float)/sizeof(Var_float[0]);
+	int var_int[100][100];
+	float var_float[100][100];*/
+
+	double single_cut_var[nVariable]={0,};
 	int step;
 	int nvertex, njet, nbjet;
 	float mllpm, met;
 
 	TLorentzVector* dilep = NULL;
 	TLorentzVector* pseudottbar = NULL;
-
-	int Var_int_size = sizeof(Var_int)/sizeof(Var_int[0]);
-	int Var_float_size = sizeof(Var_float)/sizeof(Var_float[0]);
-	int var_int[100][100];
-	float var_float[100][100];
-	double single_cut_var[nVariable]={0,};
 
 	TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
 
@@ -177,8 +179,10 @@
 
 	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 
-	TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events / 10 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Missing Et [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
+	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events / 10 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
+	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Missing Et [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
+	TString Ytitle[nVariable] = {"Events / 10 GeV"};//=====================================variable
+	TString Xtitle[nVariable] = {"Missing Et[GeV]"};//========================================variable
 
 	TString Channel_Cut[nChannel] = {"&&channel","&&channel==1","&&channel==2","&&channel==3"};//Dilepton,MuEl,ElEl,MuMu;
 	TString Channel_txt[nChannel] = {"Dilepton","MuEl","ElEl","MuMu"};
@@ -218,11 +222,16 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	int nbin[nVariable] = {70,60,20,10,6,10};//===================================variable
+	/*int nbin[nVariable] = {70,60,20,10,6,10};//===================================variable
 	int xmin[nVariable] = {0,20,0,0,0,300};//====================================variable
 	int xmax[nVariable] = {70,320,200,10,6,1200};//====================================variable
-	int ymin[nVariable] = {300,300,400,100,100,1100};//====================================variable
-	//float ymin[nVariable] = {0.001,300,400,100,100};//====================================variable
+	int ymin[nVariable] = {300,300,400,100,100,1100};//====================================variable*/
+
+	int nbin[nVariable] = {20};//===================================variable
+        int xmin[nVariable] = {0};//====================================variable
+        int xmax[nVariable] = {200};//====================================variable
+        int ymin[nVariable] = {400};//====================================variable
+
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -486,21 +495,25 @@
 				  lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				  l_[NVar][NStep][nCh]->Draw();*/
 
-				double DataBin_ev[] = {0,};
+				const int n = 20;//============================================>Variable
+				double DataBin_ev[n] = {0,};
 				for(int i = 0; i < nbin[NVar]; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double MCBin_ev[] = {0,};
+				double MCBin_ev[n] = {0,};
 				for(int i = 0; i < nbin[NVar]; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double RatioBin_ev[] = {0,};
+				double RatioBin_ev[n] = {0,};
 				for(int i = 0; i < nbin[NVar]; i++){
-					RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
-					//cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
+					if(MCBin_ev[i]!=0)RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
+					cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
 				}
+
+				cout<<""<<endl;
+				cout<<""<<endl;
 
 				////////////////////////////////////////////PUeventReweighting////////////////////////////////////////
 
@@ -512,39 +525,41 @@
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int tr = 0; tr < Sample_Num; tr++){
 						//for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-						for(int nev = 0; nev < 10000; nev++){
+						for(int nev = 0; nev < 1000; nev++){
 							tree[tr]->GetEntry(nev);
-							if(dilep == NULL && pseudottbar == NULL) continue;
+							if(dilep == NULL ) continue;
+							if(pseudottbar == NULL) continue;
 							/*nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
 							  mllpm = var_float[1][0], met = var_float[2][0];*/
 
-							single_cut_var[0] = nvertex; single_cut_var[1] = dilep->M(); single_cut_var[2] = met;
-							single_cut_var[3] = njet; single_cut_var[4] = nbjet; single_cut_var[5] = pseudottbar->M();//================================>variable
+							single_cut_var[0] = nvertex; //single_cut_var[1] = dilep->M(); single_cut_var[2] = met;
+							//single_cut_var[3] = njet; single_cut_var[4] = nbjet; single_cut_var[5] = pseudottbar->M();//================================>variable
 
 							for(int i = 0; i < nbin[NVar]; i++){
 								if(NStep==0 && step>=1){
-									if(i<=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(i>1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
+									if(MCBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								if(NStep==1 && step>=2){
-									if(i<=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(i>1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
+									if(MCBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								if(NStep==2 && step>=3){
-									if(i<=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(i>1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
+									if(MCBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								if(NStep==3 && step>=4){
-									if(i<=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(i>1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
+									if(MCBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								if(NStep==4 && step>=5){
-									if(i<=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(i>1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
+									if(MCBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								//cout<<"Reweight Bin: "<<histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;			
-								//cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;			
+								//cout<<"RatioBin: "<<RatioBin_ev[i]<<endl;		
 							}
+							//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 						}
 					}
 
@@ -567,9 +582,6 @@
 					for(int nMC = 0; nMC < nMonteCal; nMC++){
 						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 						cout<<Legend_Name[nMC]<<" Reweight Scaled Integral: "<<histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1)<<endl;
-						/*for(int i = 0; i < nbin[NVar]; i++){
-						//cout<<"Reweight Scaled Bin: "<<histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(i)<<endl;
-						}*/
 					}
 
 					for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
