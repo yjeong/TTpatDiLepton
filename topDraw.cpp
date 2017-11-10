@@ -507,17 +507,17 @@
 				  l_[NVar][NStep][nCh]->Draw();*/
 
 				const int n = histo_RealData[NVar][NStep][nCh]->GetNbinsX();//============================================>Variable
-				double DataBin_ev[n];
+				float DataBin_ev[n];
 				for(int i = 0; i < n; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double MCBin_ev[n];
+				float MCBin_ev[n];
 				for(int i = 0; i < n; i++){
 					MCBin_ev[i] = histo_MC[NVar][NStep][nCh]->GetBinContent(i);
 				}
 
-				double RatioBin_ev[n];
+				float RatioBin_ev[n];
 				for(int i = 0; i < n; i++){
 					RatioBin_ev[i] = DataBin_ev[i]/MCBin_ev[i];
 					//cout<<"FixedRatio: "<<RatioBin_ev[i]<<",    Data: "<<DataBin_ev[i]<<",    MC: "<<MCBin_ev[i]<<endl;
@@ -533,7 +533,7 @@
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int tr = 0; tr < Sample_Num; tr++){
 						//for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-						for(int nev = 0; nev < 10000; nev++){
+							for(int nev = 0; nev < 10000; nev++){
 							tree[tr]->GetEntry(nev);
 							if(dilep == NULL ) continue;
 							if(pseudottbar == NULL) continue;
@@ -560,7 +560,7 @@
 							for(int i = 0; i < n; i++){
 								if(NStep==0 && step>=1){
 									if(MCBin_ev[i]==0 || DataBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(MCBin_ev[i]!=0 && DataBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
+									if(MCBin_ev[i]!=0 && DataBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1.1);
 								}
 								if(NStep==1 && step>=2){
 									if(MCBin_ev[i]==0 || DataBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
@@ -584,23 +584,23 @@
 							}
 							//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 						}
-					}
+						}
 
-					if(nMC == 0){//tt-signal(visible)
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
-					}
-					if(nMC == 1){//tt-others
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
-					}
-					if(nMC == 2){//w+jets
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
-					}
+						if(nMC == 0){//tt-signal(visible)
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
+						}
+						if(nMC == 1){//tt-others
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
+						}
+						if(nMC == 2){//w+jets
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
+							histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
+						}
 					}
 
 					double Reweight_MonteCal_ev = 0;
@@ -738,7 +738,7 @@
 
 					histo_nReweight_MC[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					for(int nMC = 0; nMC < nMonteCal; nMC++){
-						if(nMC >= 0 && nMC <= 2)histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
+						histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
 					}
 
 					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
