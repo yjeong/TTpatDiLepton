@@ -560,7 +560,7 @@
 							for(int i = 0; i < n; i++){
 								if(NStep==0 && step>=1){
 									if(MCBin_ev[i]==0 || DataBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
-									if(MCBin_ev[i]!=0 && DataBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1.1);
+									if(MCBin_ev[i]!=0 && DataBin_ev[i]!=0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],RatioBin_ev[i]);
 								}
 								if(NStep==1 && step>=2){
 									if(MCBin_ev[i]==0 || DataBin_ev[i]==0)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],1);
