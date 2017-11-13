@@ -550,13 +550,14 @@
 							tree[tr]->GetEntry(nev);
 							/*tree[0]->GetEntry(756880);//tt-signal
 							tree[1]->GetEntry(756880);//tt-others
-							tree[2]->GetEntry(66613);//wjets
-							tree[3]->GetEntry(67554);//diboson
-							tree[4]->GetEntry(9903);
-							tree[5]->GetEntry(9052);
-							tree[6]->GetEntry(10001);
-							tree[7]->GetEntry(193365);//Z-gamma
-							tree[8]->GetEntry(293896);*/
+							tree[2]->GetEntry(164349);//w-jet
+							tree[3]->GetEntry(66613);//singleTop
+							tree[4]->GetEntry(67554);//singleTop
+							tree[5]->GetEntry(9903);//diboson
+							tree[6]->GetEntry(9052);
+							tree[7]->GetEntry(10001);
+							tree[8]->GetEntry(193365);//Z-gamma
+							tree[9]->GetEntry(293896);*/
 							if(dilep == NULL ) continue;
 							if(pseudottbar == NULL) continue;
 							if(pseudojet1 == NULL) continue;
@@ -590,7 +591,7 @@
 							if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.4);//0.4
 							if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.25);//0.25
 							if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.2);//0.2
-							if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.2);//0.2
+							if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.19);//0.19
 							//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 						}
 					}
