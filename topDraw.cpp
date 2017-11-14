@@ -556,7 +556,7 @@
 				for(int tr = 0; tr < nMonteCal; tr++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					cout<<"tree event: "<<tree[tr]->GetEntries()<<endl;
+					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
 						//tree[tr]->GetEntry(nev);
 
@@ -584,9 +584,6 @@
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
 						double PUeventReweight = 1;
-
-						//single_cut_var[1] = dilep->M(); //single_cut_var[2] = njet;
-						//single_cut_var[3] = nbjet; single_cut_var[4] = pseudottbar->M();//================================>variable
 
 						if(!(tri!=0&&filtered==1&&is3lep==2*genweight)) continue;
 						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
@@ -652,6 +649,7 @@
 					}
 				}
 
+				cout<<""<<endl;
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC<=2){
 						Reweight_MonteCal_ev = histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
