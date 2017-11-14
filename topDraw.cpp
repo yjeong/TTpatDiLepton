@@ -90,7 +90,7 @@
 	float ly2 = 0.86;
 
 	const int StepNum = 5;//Step Num total:5
-	const int nVariable = 2;//number of Variable 
+	const int nVariable = 1;//number of Variable 
 	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
@@ -114,6 +114,7 @@
 	//----------------------------PUEventReweighting------------------------------
 
 	TH1F *histo_nReweight_MonteCal[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *histo_nReweight_MonteCal_gen[StepNum][nVariable][nChannel][nMonteCal];
 	TH1F *histo_nReweight_SingleTop[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Diboson[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Zr[StepNum][nVariable][nChannel];
@@ -137,7 +138,7 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
-	TString Variable[nVariable] = {"nvertex","dilep.M()"};//==================================variable
+	TString Variable[nVariable] = {"nvertex"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -177,11 +178,11 @@
 
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-	TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]"};//========================================variable
+	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable
 
-	TString Channel_Cut[nChannel] = {"&&channel","&&channel==1","&&channel==2","&&channel==3"};//Dilepton,MuEl,ElEl,MuMu;
-	TString Channel_txt[nChannel] = {"Dilepton","MuEl","ElEl","MuMu"};
+	TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//Dilepton,MuEl,ElEl,MuMu;
+	TString Channel_txt[nChannel] = {"MuEl","ElEl","MuMu","Dilepton"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
@@ -239,21 +240,31 @@
 	  int xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	  int ymin[nVariable] = {300,300,100,100,1100};//====================================variable
 	  */
-	int nbin[nVariable] = {70,60};//===================================variable
-	int xmin[nVariable] = {0,20};//====================================variable
-	int xmax[nVariable] = {70,320};//====================================variable
-	int ymin[nVariable] = {10,300};//====================================variable
+	int nbin[nVariable] = {70};//===================================variable
+	int xmin[nVariable] = {0};//====================================variable
+	int xmax[nVariable] = {70};//====================================variable
+	int ymin[nVariable] = {10};//====================================variable
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
-	double Reweight_nvertex_ch0_s1[70] = {1,1,1.57461,1.41737,1.36887,1.39637,1.44771,1.46342,1.44894,1.45824,1.42809,1.40689,1.37412,1.32367,1.27802,1.22823,1.17476,1.12108,1.075,1.03064,0.98358,0.939974,0.899104,0.854955,0.808854,0.757371,0.714648,0.666554,0.611124,0.563386,0.513716,0.459947,0.416868,0.367155,0.328606,0.288037,0.260426,0.224434,0.201858,0.180783,0.161854,0.152404,0.133282,0.12255,0.117991,0.107644,0.104855,0.0898056,0.0900142,0.0923529,0.0810084,0.0889891,0.0898301,0.0730864,0.0838752,0.0763891,0.080161,0.0712923,0.0903143,0.0723143,0.0791081,0.0875158,0.0515199,0.0777862,0.0638293,0.0639886,0.0804862,0.10091,0.0723892,0.0631176,};
+	double Reweight_nvertex_ch0_s1[70] = {1,1,1.11669,1.14979,1.53709,1.51114,1.48553,1.46179,1.46213,1.40139,1.40683,1.39015,1.36014,1.33894,1.25762,1.25963,1.19594,1.12766,1.1163,1.05614,0.983319,0.958495,0.90247,0.886433,0.834683,0.750569,0.729631,0.69422,0.646552,0.562234,0.521072,0.446841,0.418525,0.334112,0.367731,0.309285,0.27657,0.208889,0.183123,0.204334,0.176897,0.176332,0.14754,0.153501,0.0957998,0.0699733,0.140008,0.0724668,0.119624,0.131595,0.0720464,0.102486,0.148142,0.0325122,0,0.0907374,0.119604,0,0,0.101252,0.378878,0.136711,0.180665,0,0,0,0.338323,0,0,0};
 
-	double Reweight_nvertex_ch0_s2[70] = {1,1,1.28594,1.35789,1.48528,1.35617,1.44066,1.47251,1.48736,1.47639,1.40535,1.40908,1.39193,1.30787,1.28676,1.21616,1.17832,1.12858,1.07601,1.04155,0.978562,0.939027,0.901371,0.857807,0.806109,0.74699,0.714772,0.672203,0.624107,0.567319,0.531513,0.459712,0.425542,0.354493,0.331717,0.291665,0.269395,0.223979,0.215001,0.191566,0.158274,0.164807,0.147684,0.125273,0.115785,0.119431,0.105452,0.0991314,0.0870809,0.0868735,0.0677515,0.145867,0.0929118,0.081588,0.086953,0.0683544,0.0627178,0.0592321,0.0370501,0.0891814,0.21826,0.133143,0.0595316,0.0246048,0.0854128,0.0699746,0.0184146,0.142241,0.0530706,0};
+	double Reweight_nvertex_ch0_s2[70] = {1,1,1.11669,1.14979,1.53709,1.51114,1.48553,1.46179,1.46213,1.40139,1.40683,1.39015,1.36014,1.33894,1.25762,1.25963,1.19594,1.12766,1.1163,1.05614,0.983319,0.958495,0.90247,0.886433,0.834683,0.750569,0.729631,0.69422,0.646552,0.562234,0.521072,0.446841,0.418525,0.334112,0.367731,0.309285,0.27657,0.208889,0.183123,0.204334,0.176897,0.176332,0.14754,0.153501,0.0957998,0.0699733,0.140008,0.0724668,0.119624,0.131595,0.0720464,0.102486,0.148142,0.0325122,0,0.0907374,0.119604,0,0,0.101252,0.378878,0.136711,0.180665,0,0,0,0.338323,0,0,0};
 
-	double Reweight_nvertex_ch0_s3[70] = {1,1,0.625488,2.19985,1.41341,1.25281,1.44788,1.58149,1.45993,1.4673,1.3597,1.41939,1.39363,1.35003,1.26953,1.22693,1.17567,1.15793,1.07572,1.04508,0.992817,0.958443,0.931594,0.887484,0.813566,0.779773,0.73972,0.666164,0.643885,0.57032,0.538309,0.477563,0.439566,0.37933,0.338446,0.332467,0.296006,0.256151,0.229233,0.193142,0.188976,0.219882,0.178507,0.121429,0.130707,0.143905,0.112451,0.117078,0.104688,0.0841364,0.0682198,0.148161,0.114177,0.149065,0.073108,0.083788,0.0871993,0.0475814,0.050044,0.138584,0.14198,0.203555,0.142355,0.0442927,0,0,0.0812879,0,0.58397,0};
+	double Reweight_nvertex_ch0_s3[70] = {1,1,0.703465,1.40019,1.49645,1.47803,1.5314,1.55007,1.592,1.53754,1.44048,1.38773,1.37172,1.35659,1.29884,1.24348,1.19719,1.15386,1.07685,1.03385,0.964184,0.946938,0.910429,0.879424,0.796209,0.770304,0.749509,0.675919,0.638597,0.566006,0.522009,0.43643,0.418617,0.360905,0.357568,0.31299,0.27697,0.242652,0.196638,0.213475,0.1807,0.193461,0.159858,0.129387,0.128425,0.100497,0.113911,0.0718695,0.0825647,0.0562259,0.0498585,0.0895106,0.122015,0.139937,0,0.0951575,0.0961218,0,0,0.167064,0.138257,0.158111,0.192406,0,0,0,0.369809,0,0,0};
 
-	double Reweight_nvertex_ch0_s4[70] = {1,1,0.827119,1.86144,1.63845,1.52283,1.66105,1.64993,1.71462,1.58522,1.55658,1.49754,1.46826,1.43918,1.3349,1.25694,1.21613,1.1775,1.12217,1.05409,0.994542,0.944167,0.934481,0.881692,0.800318,0.761798,0.74193,0.64264,0.615461,0.552447,0.50692,0.445012,0.407468,0.367538,0.326377,0.308381,0.260658,0.244473,0.216092,0.196347,0.162182,0.207063,0.160001,0.124306,0.108565,0.131883,0.100738,0.0855006,0.0931506,0.0762177,0.0579933,0.141915,0.0995561,0.161873,0.0270297,0.0820022,0.0870258,0.0406629,0.0610898,0.121338,0.0594661,0.176109,0.134301,0,0,0,0.268938,0,0.489172,0};
+	double Reweight_nvertex_ch0_s4[70] = {1,1,0.703465,1.40019,1.49645,1.47803,1.5314,1.55007,1.592,1.53754,1.44048,1.38773,1.37172,1.35659,1.29884,1.24348,1.19719,1.15386,1.07685,1.03385,0.964184,0.946938,0.910429,0.879424,0.796209,0.770304,0.749509,0.675919,0.638597,0.566006,0.522009,0.43643,0.418617,0.360905,0.357568,0.31299,0.27697,0.242652,0.196638,0.213475,0.1807,0.193461,0.159858,0.129387,0.128425,0.100497,0.113911,0.0718695,0.0825647,0.0562259,0.0498585,0.0895106,0.122015,0.139937,0,0.0951575,0.0961218,0,0,0.167064,0.138257,0.158111,0.192406,0,0,0,0.369809,0,0,0};
 
-	double Reweight_nvertex_ch0_s5[70] = {1,1,0.649097,1.53981,1.57787,1.53459,1.50091,1.59191,1.58493,1.539,1.46232,1.42711,1.41007,1.3925,1.28992,1.24431,1.20523,1.15088,1.11719,1.02794,1.00389,0.939047,0.91499,0.881508,0.815775,0.775787,0.738357,0.667685,0.630413,0.580999,0.499866,0.45994,0.443124,0.374534,0.333202,0.324108,0.277501,0.25011,0.232091,0.193096,0.151634,0.20809,0.176795,0.130819,0.116836,0.163692,0.0899257,0.0845571,0.0724535,0.0725982,0.0557243,0.207136,0.128305,0.196088,0,0.137084,0.103685,0.179732,0.167643,0.16678,0,0.177056,0.121347,0,0,0,0.223631,0,0.473335,0};
+	double Reweight_nvertex_ch0_s5[70] = {1,1,0.558507,1.39006,1.37191,1.47752,1.48753,1.61026,1.55835,1.53473,1.44318,1.38293,1.35698,1.35568,1.28899,1.25199,1.18833,1.1369,1.07694,1.02453,0.989556,0.932239,0.906399,0.874475,0.797277,0.776935,0.735366,0.676318,0.623836,0.58636,0.522878,0.47006,0.428486,0.379308,0.369805,0.319417,0.27797,0.238575,0.194423,0.210718,0.183796,0.201018,0.154176,0.145329,0.1408,0.0872786,0.107129,0.0756727,0.0951131,0.0545657,0.0804836,0.100963,0.109478,0.156926,0,0.107898,0.103514,0,0,0.100891,0,0.166641,0.212635,0,0,0,0.348525,0,0,0};
+
+	/*double Reweight_nvertex_ch4_s1[70] = {1,1,1.57461,1.41737,1.36887,1.39637,1.44771,1.46342,1.44894,1.45824,1.42809,1.40689,1.37412,1.32367,1.27802,1.22823,1.17476,1.12108,1.075,1.03064,0.98358,0.939974,0.899104,0.854955,0.808854,0.757371,0.714648,0.666554,0.611124,0.563386,0.513716,0.459947,0.416868,0.367155,0.328606,0.288037,0.260426,0.224434,0.201858,0.180783,0.161854,0.152404,0.133282,0.12255,0.117991,0.107644,0.104855,0.0898056,0.0900142,0.0923529,0.0810084,0.0889891,0.0898301,0.0730864,0.0838752,0.0763891,0.080161,0.0712923,0.0903143,0.0723143,0.0791081,0.0875158,0.0515199,0.0777862,0.0638293,0.0639886,0.0804862,0.10091,0.0723892,0.0631176,};
+
+	  double Reweight_nvertex_ch4_s2[70] = {1,1,1.28594,1.35789,1.48528,1.35617,1.44066,1.47251,1.48736,1.47639,1.40535,1.40908,1.39193,1.30787,1.28676,1.21616,1.17832,1.12858,1.07601,1.04155,0.978562,0.939027,0.901371,0.857807,0.806109,0.74699,0.714772,0.672203,0.624107,0.567319,0.531513,0.459712,0.425542,0.354493,0.331717,0.291665,0.269395,0.223979,0.215001,0.191566,0.158274,0.164807,0.147684,0.125273,0.115785,0.119431,0.105452,0.0991314,0.0870809,0.0868735,0.0677515,0.145867,0.0929118,0.081588,0.086953,0.0683544,0.0627178,0.0592321,0.0370501,0.0891814,0.21826,0.133143,0.0595316,0.0246048,0.0854128,0.0699746,0.0184146,0.142241,0.0530706,0};
+
+	  double Reweight_nvertex_ch4_s3[70] = {1,1,0.625488,2.19985,1.41341,1.25281,1.44788,1.58149,1.45993,1.4673,1.3597,1.41939,1.39363,1.35003,1.26953,1.22693,1.17567,1.15793,1.07572,1.04508,0.992817,0.958443,0.931594,0.887484,0.813566,0.779773,0.73972,0.666164,0.643885,0.57032,0.538309,0.477563,0.439566,0.37933,0.338446,0.332467,0.296006,0.256151,0.229233,0.193142,0.188976,0.219882,0.178507,0.121429,0.130707,0.143905,0.112451,0.117078,0.104688,0.0841364,0.0682198,0.148161,0.114177,0.149065,0.073108,0.083788,0.0871993,0.0475814,0.050044,0.138584,0.14198,0.203555,0.142355,0.0442927,0,0,0.0812879,0,0.58397,0};
+
+	  double Reweight_nvertex_ch4_s4[70] = {1,1,0.827119,1.86144,1.63845,1.52283,1.66105,1.64993,1.71462,1.58522,1.55658,1.49754,1.46826,1.43918,1.3349,1.25694,1.21613,1.1775,1.12217,1.05409,0.994542,0.944167,0.934481,0.881692,0.800318,0.761798,0.74193,0.64264,0.615461,0.552447,0.50692,0.445012,0.407468,0.367538,0.326377,0.308381,0.260658,0.244473,0.216092,0.196347,0.162182,0.207063,0.160001,0.124306,0.108565,0.131883,0.100738,0.0855006,0.0931506,0.0762177,0.0579933,0.141915,0.0995561,0.161873,0.0270297,0.0820022,0.0870258,0.0406629,0.0610898,0.121338,0.0594661,0.176109,0.134301,0,0,0,0.268938,0,0.489172,0};
+
+	  double Reweight_nvertex_ch4_s5[70] = {1,1,0.649097,1.53981,1.57787,1.53459,1.50091,1.59191,1.58493,1.539,1.46232,1.42711,1.41007,1.3925,1.28992,1.24431,1.20523,1.15088,1.11719,1.02794,1.00389,0.939047,0.91499,0.881508,0.815775,0.775787,0.738357,0.667685,0.630413,0.580999,0.499866,0.45994,0.443124,0.374534,0.333202,0.324108,0.277501,0.25011,0.232091,0.193096,0.151634,0.20809,0.176795,0.130819,0.116836,0.163692,0.0899257,0.0845571,0.0724535,0.0725982,0.0557243,0.207136,0.128305,0.196088,0,0.137084,0.103685,0.179732,0.167643,0.16678,0,0.177056,0.121347,0,0,0,0.223631,0,0.473335,0};*/
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -356,6 +367,7 @@
 				/////////////////////////////////////////////// MonteCals ///////////////////////////////////////////////////
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					//histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 					histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 				}
 
@@ -364,7 +376,7 @@
 				double Diboson_ev = 0;
 				double Zgamma_ev = 0;
 
-				for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
+				for(int nMC = 0; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
 					if(nMC >= 3 && nMC <= 4){
 						histo_SingleTop[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
 					}
@@ -459,8 +471,8 @@
 				}
 
 				/*histo_MC[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
-				histo_MC[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
-				histo_MC[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);*/
+				  histo_MC[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
+				  histo_MC[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);*/
 				histo_MC[NVar][NStep][nCh]->SetLineWidth(2);
 
 				double nev_Data = 1;
@@ -542,56 +554,53 @@
 				histo_nReweight_Zr[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Zr_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
 
+				double Reweight_totevents[nMonteCal];
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					for(int tr = 0; tr < Sample_Num-3; tr++){
-						//for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-						for(int nev = 0; nev < 10000; nev++){
+					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+
+					for(int tr = 0; tr < Sample_Num; tr++){
+						for(int nev = 0; nev < tree[tr]->GetEntries()/1000; nev++){
+							if(tr >= 10) continue;
 							tree[tr]->GetEntry(nev);
-							/*tree[0]->GetEntry(756880);//tt-signal
-							tree[1]->GetEntry(756880);//tt-others
-							tree[2]->GetEntry(164349);//w-jet
-							tree[3]->GetEntry(66613);//singleTop
-							tree[4]->GetEntry(67554);//singleTop
-							tree[5]->GetEntry(9903);//diboson
-							tree[6]->GetEntry(9052);
-							tree[7]->GetEntry(10001);
-							tree[8]->GetEntry(193365);//Z-gamma
-							tree[9]->GetEntry(293896);*/
+
 							if(dilep == NULL ) continue;
 							if(pseudottbar == NULL) continue;
 							if(pseudojet1 == NULL) continue;
 							if(pseudojet2 == NULL) continue;
 							if(lep1 == NULL) continue;
 							if(lep2 == NULL) continue;
+
+							if(nCh==0) if(!(channel==1)) continue;
+							if(nCh==1) if(!(channel==2)) continue;
+							if(nCh==2) if(!(channel==3)) continue;
+							if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
+
+							double PUeventReweight = 1;
+
+							single_cut_var[0] = nvertex; //single_cut_var[1] = dilep->M(); //single_cut_var[2] = njet;
+							//single_cut_var[3] = nbjet; single_cut_var[4] = pseudottbar->M();//================================>variable
+
+							histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
+							Reweight_totevents[nMC] = histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC]->Integral();
+
 							if(!(tri!=0&&filtered==1&&is3lep==2*genweight)) continue;
-
-							if(nCh==0) if(!(channel)) continue;
-							if(nCh==1) if(!(channel==1)) continue;
-							if(nCh==2) if(!(channel==2)) continue;
-							if(nCh==3) if(!(channel==3)) continue;
-
 							if(nMC==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
 							if(nMC==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
 							if(nMC==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
 							if(nMC==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
-							/*nvertex = var_int[1][0], njet = var_int[2][0], nbjet = var_int[3][0];
-							  mllpm = var_float[1][0], met = var_float[2][0];*/
 
-							single_cut_var[0] = nvertex; single_cut_var[1] = dilep->M(); //single_cut_var[2] = njet;
-							//single_cut_var[3] = nbjet; single_cut_var[4] = pseudottbar->M();//================================>variable
-							double PUeventReweight = 1;
-							if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex])) continue;
-							if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex])) continue;
-							if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex])) continue;
-							if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex])) continue;
-							if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex])) continue;
+							if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
+							if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
+							if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
+							if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
+							if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;
 
-							if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*2.5);//2.5
-							if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.4);//0.4
-							if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.25);//0.25
-							if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.2);//0.2
-							if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight*0.19);//0.19
+							if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
+							if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
+							if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
+							if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
+							if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
 							//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 						}
 					}
@@ -611,187 +620,206 @@
 						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
 					}
-					}
-
-					double Reweight_MonteCal_ev = 0;
-					double Reweight_SingleTop_ev = 0;
-					double Reweight_Diboson_ev = 0;
-					double Reweight_Zgamma_ev = 0;
-					int Reweight_Int_MonteCal[nMonteCal] = {0,};
-					int Reweight_Int_SingleTop = 0;
-					int Reweight_Int_Diboson = 0;
-					int Reweight_Int_Zgamma = 0;
-
-					for(int nMC = 0; nMC < nMonteCal; nMC++){
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
-					}
-
-					for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
-						if(nMC >= 3 && nMC <= 4){
-							histo_nReweight_SingleTop[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
-						}
-
-						if(nMC >= 5 && nMC <= 7){
-							histo_nReweight_Diboson[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
-						}
-
-						if( nMC >= 8 && nMC <= 9){
-							histo_nReweight_Zr[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
-						}
-					}
-
-					for(int nMC = 0; nMC < nMonteCal; nMC++){
-						if(nMC<=2){
-							Reweight_MonteCal_ev = histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
-							Reweight_Int_MonteCal[nMC] = histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
-							cout<<Legend_Name[nMC]<<" Reweighted yield: "<<Reweight_Int_MonteCal[nMC]<<", err : "<<sqrt(Reweight_MonteCal_ev)<<endl;
-						}
-						if(nMC==4){
-							Reweight_SingleTop_ev = histo_nReweight_SingleTop[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
-							Reweight_Int_SingleTop = histo_nReweight_SingleTop[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
-							cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_SingleTop<<", err : "<<sqrt(Reweight_SingleTop_ev)<<endl;
-						}
-						if(nMC==6){
-							Reweight_Diboson_ev = histo_nReweight_Diboson[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
-							Reweight_Int_Diboson = histo_nReweight_Diboson[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
-							cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_Diboson<<", err : "<<sqrt(Reweight_Diboson_ev)<<endl;
-						}
-						if(nMC==8){
-							Reweight_Zgamma_ev = histo_nReweight_Zr[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
-							Reweight_Int_Zgamma = histo_nReweight_Zr[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
-							cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_Zgamma<<", err : "<<sqrt(Reweight_Zgamma_ev)<<endl;
-						}
-					}
-
-					histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
-					histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-					histo_nReweight_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
-					//histo_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
-					histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
-					histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
-					histo_nReweight_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
-					//histo_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
-					histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
-					histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
-					histo_nReweight_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
-					//histo_Zr[NVar][NStep][nCh]->SetLineWidth(2);
-
-					for(int nMC = 0; nMC < nMonteCal; nMC++){
-						if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-						if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-						if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-						if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-						if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-						if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-					}
-
-					hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
-					for(int nMC = 0; nMC < nMonteCal-7; nMC++){
-						if(nMC >= 0 && nMC <= 2)hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);//MC
-					}
-
-					hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-					hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
-					hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
-
-					//---------------------------------------------------------
-
-					histo_nReweight_Data[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Data_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(data_c);
-
-					//histo_nReweight_Data[NVar][NStep][nCh]->SetLineStyle(2);
-
-					for(int nReal = 0; nReal < nRealData; nReal++){
-						histo_nReweight_Data[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
-					}
-
-					//double Reweight_MCBin_ev[n];
-					//for(int i = 0; i < n; i++) Reweight_MCBin_ev[i] = histo_nReweight_MonteCal[NVar][NStep][nCh]->GetBinContent(i);
-
-					/*double Reweight_DataBin_ev[n];
-					for(int i = 0; i < n; i++) Reweight_DataBin_ev[i] = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(i);
-
-					double Reweight_RatioBin_ev[n];
-					for(int i = 0; i < n; i++){
-						Reweight_RatioBin_ev[i] = Reweight_DataBin_ev[i]/Reweight_MCBin_ev[i];
-						cout<<"FixedRatio: "<<Reweight_RatioBin_ev[i]<<",    Data: "<<Reweight_DataBin_ev[i]<<",    MC: "<<Reweight_MCBin_ev[i]<<endl;
-					}*/
-
-					double ev_Re = 0;
-					ev_Re = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(ev_Re));
-					cout<<"data : "<<revents<<endl;
-					cout<<""<<endl;
-
-					histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(1);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetLineWidth(1);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetFillStyle(3001);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetFillColor(14);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerStyle(20);
-					histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerSize(1.2);
-
-					//--------------------------------------------------------
-
-					plotpad_[NVar][NStep][nCh]->cd();
-
-					double ymax = 0;
-					ymax = hs[NVar][NStep][nCh]->GetMaximum();
-					hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
-					hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-					//hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-					hs[NVar][NStep][nCh]->Draw();
-
-					/*ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
-					  histo_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
-					  histo_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-					  histo_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-					  histo_MC[NVar][NStep][nCh]->Draw();*/
-
-					histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
-					canv_[NVar][NStep][nCh]->Modified();
-
-					lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
-					lt2.DrawLatex(x_1,y_1,"CMS");
-					lt3.DrawLatex(x_2,y_2,"Preliminary");
-					lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
-					l_[NVar][NStep][nCh]->Draw();
-
-					/////////////////////////////////////////////// Ratio plot //////////////////////////////////////////
-
-					histo_nReweight_MC[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					for(int nMC = 0; nMC < nMonteCal; nMC++){
-						histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
-					}
-
-					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
-					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
-					histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(2);
-
-					histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					histo_Ratio[NVar][NStep][nCh]->Divide(histo_nReweight_Data[NVar][NStep][nCh],histo_nReweight_MC[NVar][NStep][nCh],1,1,"b");
-
-					ratiopad_[NVar][NStep][nCh]->cd();
-					gPad->SetTopMargin(0);
-					gPad->SetBottomMargin(0);
-					ratiopad_[NVar][NStep][nCh]->SetGridy();
-					histo_Ratio[NVar][NStep][nCh]->SetMarkerStyle(20);
-					histo_Ratio[NVar][NStep][nCh]->SetMarkerSize(1.2);
-					histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
-					histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitle("Data / MC");
-					histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetLabelSize(0.11);
-					histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
-					histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
-					//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-					//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
-					histo_Ratio[NVar][NStep][nCh]->Draw("e");
-					/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
-					  rp->Draw();
-					  canv_[NVar][NStep][nCh]->Update();*/
-					canv_[NVar][NStep][nCh]->cd();
-					canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
 				}
+
+				double Reweight_MonteCal_ev = 0;
+				double Reweight_SingleTop_ev = 0;
+				double Reweight_Diboson_ev = 0;
+				double Reweight_Zgamma_ev = 0;
+				int Reweight_Int_MonteCal[nMonteCal] = {0,};
+				int Reweight_Int_SingleTop = 0;
+				int Reweight_Int_Diboson = 0;
+				int Reweight_Int_Zgamma = 0;
+
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					//histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/Reweight_totevents[nMC]);
+					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
+				}
+
+				for(int nMC = 0; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
+					if(nMC >= 3 && nMC <= 4){
+						histo_nReweight_SingleTop[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
+					}
+
+					if(nMC >= 5 && nMC <= 7){
+						histo_nReweight_Diboson[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
+					}
+
+					if( nMC >= 8 && nMC <= 9){
+						histo_nReweight_Zr[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
+					}
+				}
+
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					if(nMC<=2){
+						Reweight_MonteCal_ev = histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
+						Reweight_Int_MonteCal[nMC] = histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
+						cout<<Legend_Name[nMC]<<" Reweighted yield: "<<Reweight_Int_MonteCal[nMC]<<", err : "<<sqrt(Reweight_MonteCal_ev)<<endl;
+					}
+					if(nMC==4){
+						Reweight_SingleTop_ev = histo_nReweight_SingleTop[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
+						Reweight_Int_SingleTop = histo_nReweight_SingleTop[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
+						cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_SingleTop<<", err : "<<sqrt(Reweight_SingleTop_ev)<<endl;
+					}
+					if(nMC==6){
+						Reweight_Diboson_ev = histo_nReweight_Diboson[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
+						Reweight_Int_Diboson = histo_nReweight_Diboson[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
+						cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_Diboson<<", err : "<<sqrt(Reweight_Diboson_ev)<<endl;
+					}
+					if(nMC==8){
+						Reweight_Zgamma_ev = histo_nReweight_Zr[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
+						Reweight_Int_Zgamma = histo_nReweight_Zr[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
+						cout<<Legend_Name[nMC]<<" Reweighted yield : "<<Reweight_Int_Zgamma<<", err : "<<sqrt(Reweight_Zgamma_ev)<<endl;
+					}
+				}
+
+				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
+				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
+				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
+				//histo_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
+				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
+				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
+				histo_nReweight_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
+				//histo_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
+				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
+				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
+				histo_nReweight_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
+				//histo_Zr[NVar][NStep][nCh]->SetLineWidth(2);
+
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
+					if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "lp");
+					if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "lp");
+					if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
+					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
+					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
+				}
+
+				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
+
+				/*for(int nMC = 0; nMC < 3; nMC++){
+				  hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);//MC
+				  }*/
+
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);//tt-signal
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);//tt-others
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);//Wjets*/
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+
+				//---------------------------------------------------------
+
+				histo_nReweight_Data[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Data_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(data_c);
+
+				//histo_nReweight_Data[NVar][NStep][nCh]->SetLineStyle(2);
+
+				for(int nReal = 0; nReal < nRealData; nReal++){
+					histo_nReweight_Data[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
+				}
+
+				double Reweight_SingleTop[n];
+				double Reweight_Diboson[n];
+				double Reweight_Zr[n];
+				double Reweight_ttsignal[n];
+				double Reweight_ttothers[n];
+				double Reweight_wjets[n];
+				double Reweight_totMC[n];
+				double Reweight_DataBin[n];
+
+				double Reweight_RatioBin[n];
+
+				/*for(int i = 0; i < n; i++){
+				  if(i==61){
+				  Reweight_SingleTop[i] = histo_nReweight_SingleTop[NVar][NStep][nCh]->GetBinContent(i);
+				  Reweight_Diboson[i] = histo_nReweight_Diboson[NVar][NStep][nCh]->GetBinContent(i);
+				  Reweight_Zr[i] = histo_nReweight_Zr[NVar][NStep][nCh]->GetBinContent(i);
+				  Reweight_ttsignal[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][0]->GetBinContent(i);
+				  Reweight_ttothers[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][1]->GetBinContent(i);
+				  Reweight_wjets[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][2]->GetBinContent(i);
+				  Reweight_DataBin[i] = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(i);
+
+				  Reweight_tot_MC[i] = Reweight_SingleTop[i]+Reweight_Diboson[i]+Reweight_Zr[i]+Reweight_ttsignal[i]+Reweight_ttothers[i]+Reweight_wjets[i];
+
+				  Reweight_RatioBin[i] = Reweight_DataBin[i]/Reweight_totMC[i];
+
+				  cout<<"ReweightBin: "<<Reweight_RatioBin_ev[i]<<",    ReweightData: "<<Reweight_DataBin_ev[i]<<",    MC: "<<Reweight_MCBin_ev[i]<<endl;
+				  }
+				  }*/
+
+				double ev_Re = 0;
+				ev_Re = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetBinError(nbin[NVar]+1,sqrt(ev_Re));
+				cout<<"data : "<<revents<<endl;
+				cout<<""<<endl;
+
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetLineWidth(1);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetFillStyle(3001);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetFillColor(14);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerStyle(20);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerSize(1.2);
+
+				//--------------------------------------------------------
+
+				plotpad_[NVar][NStep][nCh]->cd();
+
+				double ymax = 0;
+				ymax = hs[NVar][NStep][nCh]->GetMaximum();
+				hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
+				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				//hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				hs[NVar][NStep][nCh]->Draw();
+
+				/*ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
+				  histo_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
+				  histo_MC[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				  histo_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				  histo_MC[NVar][NStep][nCh]->Draw();*/
+
+				histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
+				canv_[NVar][NStep][nCh]->Modified();
+
+				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
+				lt2.DrawLatex(x_1,y_1,"CMS");
+				lt3.DrawLatex(x_2,y_2,"Preliminary");
+				lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
+				l_[NVar][NStep][nCh]->Draw();
+
+				/////////////////////////////////////////////// Ratio plot //////////////////////////////////////////
+
+				histo_nReweight_MC[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					histo_nReweight_MC[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
+				}
+
+				histo_nReweight_MC[NVar][NStep][nCh]->SetLineWidth(2);
+
+				histo_Ratio[NVar][NStep][nCh] = new TH1F(Form("histo_Ratio_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				histo_Ratio[NVar][NStep][nCh]->Divide(histo_nReweight_Data[NVar][NStep][nCh],histo_nReweight_MC[NVar][NStep][nCh],1,1,"b");
+
+				ratiopad_[NVar][NStep][nCh]->cd();
+				gPad->SetTopMargin(0);
+				gPad->SetBottomMargin(0);
+				ratiopad_[NVar][NStep][nCh]->SetGridy();
+				histo_Ratio[NVar][NStep][nCh]->SetMarkerStyle(20);
+				histo_Ratio[NVar][NStep][nCh]->SetMarkerSize(1.2);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitle("Data / MC");
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetLabelSize(0.11);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
+				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
+				//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
+				histo_Ratio[NVar][NStep][nCh]->Draw("e");
+				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
+				  rp->Draw();
+				  canv_[NVar][NStep][nCh]->Update();*/
+				canv_[NVar][NStep][nCh]->cd();
+				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
 			}
 		}
-		cout<<"13 TeV"<<endl;
 	}
+	cout<<"13 TeV"<<endl;
+}
