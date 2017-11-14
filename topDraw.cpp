@@ -147,10 +147,10 @@
 	  int var_int[100][100];
 	  float var_float[100][100];*/
 
-	double single_cut_var[nVariable]={0,};
+	double single_cut_var[nVariable][nMonteCal]={0,};
 	int step, is3lep;
 	bool filtered;
-	int nvertex, njet, nbjet;
+	int nvertex, njet, nbjet, event;
 	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight;
 
 	int gen_partonChannel, gen_partonMode, gen_pseudoChannel, channel;
@@ -214,6 +214,7 @@
 		tree[i]->SetBranchAddress("pseudojet2",&pseudojet2);
 		tree[i]->SetBranchAddress("lep1",&lep1);
 		tree[i]->SetBranchAddress("lep2",&lep2);
+		tree[i]->SetBranchAddress("event",&event);
 		tree[i]->SetBranchAddress("nvertex",&nvertex);
 		tree[i]->SetBranchAddress("njet",&njet);
 		tree[i]->SetBranchAddress("met",&met);
@@ -367,7 +368,6 @@
 				/////////////////////////////////////////////// MonteCals ///////////////////////////////////////////////////
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					//histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 					histo_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 				}
 
@@ -553,72 +553,75 @@
 				histo_nReweight_Diboson[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Diboson_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_nReweight_Zr[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Zr_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
+				for(int tr = 0; tr < nMonteCal; tr++){
+					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+					cout<<"tree event: "<<tree[tr]->GetEntries()<<endl;
+					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
+						//tree[tr]->GetEntry(nev);
 
-				double Reweight_totevents[nMonteCal];
-				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+						if(tr==0 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==1 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==2 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==3 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==4 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==5 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==6 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==7 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==8 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(tr==9 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 
-					for(int tr = 0; tr < Sample_Num; tr++){
-						for(int nev = 0; nev < tree[tr]->GetEntries()/1000; nev++){
-							if(tr >= 10) continue;
-							tree[tr]->GetEntry(nev);
+						if(dilep == NULL ) continue;
+						if(pseudottbar == NULL) continue;
+						if(pseudojet1 == NULL) continue;
+						if(pseudojet2 == NULL) continue;
+						if(lep1 == NULL) continue;
+						if(lep2 == NULL) continue;
 
-							if(dilep == NULL ) continue;
-							if(pseudottbar == NULL) continue;
-							if(pseudojet1 == NULL) continue;
-							if(pseudojet2 == NULL) continue;
-							if(lep1 == NULL) continue;
-							if(lep2 == NULL) continue;
+						if(nCh==0) if(!(channel==1)) continue;
+						if(nCh==1) if(!(channel==2)) continue;
+						if(nCh==2) if(!(channel==3)) continue;
+						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
-							if(nCh==0) if(!(channel==1)) continue;
-							if(nCh==1) if(!(channel==2)) continue;
-							if(nCh==2) if(!(channel==3)) continue;
-							if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
+						double PUeventReweight = 1;
 
-							double PUeventReweight = 1;
+						//single_cut_var[1] = dilep->M(); //single_cut_var[2] = njet;
+						//single_cut_var[3] = nbjet; single_cut_var[4] = pseudottbar->M();//================================>variable
 
-							single_cut_var[0] = nvertex; //single_cut_var[1] = dilep->M(); //single_cut_var[2] = njet;
-							//single_cut_var[3] = nbjet; single_cut_var[4] = pseudottbar->M();//================================>variable
+						if(!(tri!=0&&filtered==1&&is3lep==2*genweight)) continue;
+						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
+						if(tr==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
+						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
+						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
 
-							histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							Reweight_totevents[nMC] = histo_nReweight_MonteCal_gen[NVar][NStep][nCh][nMC]->Integral();
+						if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
+						if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
+						if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
+						if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
+						if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;
 
-							if(!(tri!=0&&filtered==1&&is3lep==2*genweight)) continue;
-							if(nMC==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
-							if(nMC==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
-							if(nMC==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
-							if(nMC==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
-
-							if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
-							if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
-							if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
-							if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
-							if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;
-
-							if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Fill(single_cut_var[NVar],PUeventReweight);
-							//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
-						}
+						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 					}
 
-					if(nMC == 0){//tt-signal(visible)
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
+					if(tr == 0){//tt-signal(visible)
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttsignal_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttsignal_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttsignal_c);
 					}
-					if(nMC == 1){//tt-others
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
+					if(tr == 1){//tt-others
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttothers_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttothers_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttothers_c);
 					}
-					if(nMC == 2){//w+jets
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
+					if(tr == 2){//w+jets
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(wjets_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(wjets_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(wjets_c);
 					}
 				}
 
@@ -632,11 +635,10 @@
 				int Reweight_Int_Zgamma = 0;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					//histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/Reweight_totevents[nMC]);
 					histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]->Scale(MonteCal_xsec[nMC]*lumi/totevents[nMC]);
 				}
 
-				for(int nMC = 0; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
+				for(int nMC = 3; nMC < nMonteCal; nMC++){//singleTop, Diboson, Z-gamma
 					if(nMC >= 3 && nMC <= 4){
 						histo_nReweight_SingleTop[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
 					}
@@ -719,7 +721,7 @@
 					histo_nReweight_Data[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
 				}
 
-				double Reweight_SingleTop[n];
+				/*double Reweight_SingleTop[n];
 				double Reweight_Diboson[n];
 				double Reweight_Zr[n];
 				double Reweight_ttsignal[n];
@@ -728,7 +730,7 @@
 				double Reweight_totMC[n];
 				double Reweight_DataBin[n];
 
-				double Reweight_RatioBin[n];
+				double Reweight_RatioBin[n];*/
 
 				/*for(int i = 0; i < n; i++){
 				  if(i==61){
