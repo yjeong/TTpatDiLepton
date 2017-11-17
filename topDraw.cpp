@@ -787,7 +787,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.5,2,"y");
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.5,1.8,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
