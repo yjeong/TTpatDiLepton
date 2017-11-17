@@ -670,12 +670,12 @@
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineWidth(2);
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-					if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-					if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-					if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
+					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "f");
+					if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "f");
+					if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "f");
+					if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
+					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
+					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
 				}
 
 				//---------------------------------------------------------
