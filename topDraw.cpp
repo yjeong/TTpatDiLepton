@@ -548,9 +548,6 @@
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
-					/*cout<<""<<endl;
-	cout<<"genweight:  "<<genweight<<" - "<<"puweight:  "<<puweight<<" - "<<"eleffweight:  "<<eleffweight<<" - "<<"mueffweight:  "<<mueffweight<<" - "<<"btagweight:  "<<btagweight<<" - "<<"topPtWeight:  "<<topPtWeight<<" - "<<"weight:  "<<weight<<endl;
-					cout<<""<<endl;*/
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
 
 						if(tr==0 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
@@ -577,7 +574,7 @@
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
 						double PUeventReweight = 1;
-						PUeventRreweight = genweight*puweight*mueffweight*eleffweight*tri;
+						PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
 						if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
 						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
@@ -809,7 +806,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.4,1.6,"y");
+				//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.4,1.6,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
