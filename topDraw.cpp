@@ -151,7 +151,7 @@
 	int step, is3lep;
 	bool filtered;
 	int nvertex, njet, nbjet, event;
-	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight;
+	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight, topPtWeight, weight;
 
 	int gen_partonChannel, gen_partonMode, gen_pseudoChannel, channel;
 
@@ -228,6 +228,8 @@
 		tree[i]->SetBranchAddress("eleffweight",&eleffweight);
 		tree[i]->SetBranchAddress("mueffweight",&mueffweight);
 		tree[i]->SetBranchAddress("btagweight",&btagweight);
+		tree[i]->SetBranchAddress("topPtWeight",&topPtWeight);
+		tree[i]->SetBranchAddress("weight",&weight);
 		tree[i]->SetBranchAddress("channel",&channel);
 		tree[i]->SetBranchAddress("gen_partonChannel",&gen_partonChannel);
 		tree[i]->SetBranchAddress("gen_pseudoChannel",&gen_pseudoChannel);
@@ -256,16 +258,6 @@
 	double Reweight_nvertex_ch0_s4[70] = {1,1,0.703465,1.40019,1.49645,1.47803,1.5314,1.55007,1.592,1.53754,1.44048,1.38773,1.37172,1.35659,1.29884,1.24348,1.19719,1.15386,1.07685,1.03385,0.964184,0.946938,0.910429,0.879424,0.796209,0.770304,0.749509,0.675919,0.638597,0.566006,0.522009,0.43643,0.418617,0.360905,0.357568,0.31299,0.27697,0.242652,0.196638,0.213475,0.1807,0.193461,0.159858,0.129387,0.128425,0.100497,0.113911,0.0718695,0.0825647,0.0562259,0.0498585,0.0895106,0.122015,0.139937,0,0.0951575,0.0961218,0,0,0.167064,0.138257,0.158111,0.192406,0,0,0,0.369809,0,0,0};
 
 	double Reweight_nvertex_ch0_s5[70] = {1,1,0.558507,1.39006,1.37191,1.47752,1.48753,1.61026,1.55835,1.53473,1.44318,1.38293,1.35698,1.35568,1.28899,1.25199,1.18833,1.1369,1.07694,1.02453,0.989556,0.932239,0.906399,0.874475,0.797277,0.776935,0.735366,0.676318,0.623836,0.58636,0.522878,0.47006,0.428486,0.379308,0.369805,0.319417,0.27797,0.238575,0.194423,0.210718,0.183796,0.201018,0.154176,0.145329,0.1408,0.0872786,0.107129,0.0756727,0.0951131,0.0545657,0.0804836,0.100963,0.109478,0.156926,0,0.107898,0.103514,0,0,0.100891,0,0.166641,0.212635,0,0,0,0.348525,0,0,0};
-
-	/*double Reweight_nvertex_ch4_s1[70] = {1,1,1.57461,1.41737,1.36887,1.39637,1.44771,1.46342,1.44894,1.45824,1.42809,1.40689,1.37412,1.32367,1.27802,1.22823,1.17476,1.12108,1.075,1.03064,0.98358,0.939974,0.899104,0.854955,0.808854,0.757371,0.714648,0.666554,0.611124,0.563386,0.513716,0.459947,0.416868,0.367155,0.328606,0.288037,0.260426,0.224434,0.201858,0.180783,0.161854,0.152404,0.133282,0.12255,0.117991,0.107644,0.104855,0.0898056,0.0900142,0.0923529,0.0810084,0.0889891,0.0898301,0.0730864,0.0838752,0.0763891,0.080161,0.0712923,0.0903143,0.0723143,0.0791081,0.0875158,0.0515199,0.0777862,0.0638293,0.0639886,0.0804862,0.10091,0.0723892,0.0631176,};
-
-	  double Reweight_nvertex_ch4_s2[70] = {1,1,1.28594,1.35789,1.48528,1.35617,1.44066,1.47251,1.48736,1.47639,1.40535,1.40908,1.39193,1.30787,1.28676,1.21616,1.17832,1.12858,1.07601,1.04155,0.978562,0.939027,0.901371,0.857807,0.806109,0.74699,0.714772,0.672203,0.624107,0.567319,0.531513,0.459712,0.425542,0.354493,0.331717,0.291665,0.269395,0.223979,0.215001,0.191566,0.158274,0.164807,0.147684,0.125273,0.115785,0.119431,0.105452,0.0991314,0.0870809,0.0868735,0.0677515,0.145867,0.0929118,0.081588,0.086953,0.0683544,0.0627178,0.0592321,0.0370501,0.0891814,0.21826,0.133143,0.0595316,0.0246048,0.0854128,0.0699746,0.0184146,0.142241,0.0530706,0};
-
-	  double Reweight_nvertex_ch4_s3[70] = {1,1,0.625488,2.19985,1.41341,1.25281,1.44788,1.58149,1.45993,1.4673,1.3597,1.41939,1.39363,1.35003,1.26953,1.22693,1.17567,1.15793,1.07572,1.04508,0.992817,0.958443,0.931594,0.887484,0.813566,0.779773,0.73972,0.666164,0.643885,0.57032,0.538309,0.477563,0.439566,0.37933,0.338446,0.332467,0.296006,0.256151,0.229233,0.193142,0.188976,0.219882,0.178507,0.121429,0.130707,0.143905,0.112451,0.117078,0.104688,0.0841364,0.0682198,0.148161,0.114177,0.149065,0.073108,0.083788,0.0871993,0.0475814,0.050044,0.138584,0.14198,0.203555,0.142355,0.0442927,0,0,0.0812879,0,0.58397,0};
-
-	  double Reweight_nvertex_ch4_s4[70] = {1,1,0.827119,1.86144,1.63845,1.52283,1.66105,1.64993,1.71462,1.58522,1.55658,1.49754,1.46826,1.43918,1.3349,1.25694,1.21613,1.1775,1.12217,1.05409,0.994542,0.944167,0.934481,0.881692,0.800318,0.761798,0.74193,0.64264,0.615461,0.552447,0.50692,0.445012,0.407468,0.367538,0.326377,0.308381,0.260658,0.244473,0.216092,0.196347,0.162182,0.207063,0.160001,0.124306,0.108565,0.131883,0.100738,0.0855006,0.0931506,0.0762177,0.0579933,0.141915,0.0995561,0.161873,0.0270297,0.0820022,0.0870258,0.0406629,0.0610898,0.121338,0.0594661,0.176109,0.134301,0,0,0,0.268938,0,0.489172,0};
-
-	  double Reweight_nvertex_ch4_s5[70] = {1,1,0.649097,1.53981,1.57787,1.53459,1.50091,1.59191,1.58493,1.539,1.46232,1.42711,1.41007,1.3925,1.28992,1.24431,1.20523,1.15088,1.11719,1.02794,1.00389,0.939047,0.91499,0.881508,0.815775,0.775787,0.738357,0.667685,0.630413,0.580999,0.499866,0.45994,0.443124,0.374534,0.333202,0.324108,0.277501,0.25011,0.232091,0.193096,0.151634,0.20809,0.176795,0.130819,0.116836,0.163692,0.0899257,0.0845571,0.0724535,0.0725982,0.0557243,0.207136,0.128305,0.196088,0,0.137084,0.103685,0.179732,0.167643,0.16678,0,0.177056,0.121347,0,0,0,0.223631,0,0.473335,0};*/
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -300,7 +292,7 @@
 				ratiopad_[NVar][NStep][nCh]->Draw();
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				plotpad_[NVar][NStep][nCh]->SetLogy();
+				//plotpad_[NVar][NStep][nCh]->SetLogy();
 				plotpad_[NVar][NStep][nCh]->RedrawAxis();
 
 				gPad->SetBottomMargin(0);
@@ -515,7 +507,6 @@
 				  ymax = hs[NVar][NStep][nCh]->GetMaximum();
 				  hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
 				  hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-				  hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				  hs[NVar][NStep][nCh]->Draw();
 
 				  histo_RealData[NVar][NStep][nCh]->Draw("same");
@@ -557,8 +548,10 @@
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
+					/*cout<<""<<endl;
+	cout<<"genweight:  "<<genweight<<" - "<<"puweight:  "<<puweight<<" - "<<"eleffweight:  "<<eleffweight<<" - "<<"mueffweight:  "<<mueffweight<<" - "<<"btagweight:  "<<btagweight<<" - "<<"topPtWeight:  "<<topPtWeight<<" - "<<"weight:  "<<weight<<endl;
+					cout<<""<<endl;*/
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-						//tree[tr]->GetEntry(nev);
 
 						if(tr==0 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 						if(tr==1 && NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
@@ -584,18 +577,19 @@
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
 						double PUeventReweight = 1;
+						PUeventRreweight = genweight*puweight*mueffweight*eleffweight*tri;
 
-						if(!(tri!=0&&filtered==1&&is3lep==2*genweight)) continue;
+						if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
 						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
 						if(tr==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
 						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
 						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
 
-						if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
+						/*if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
 						if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
 						if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
 						if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
-						if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;
+						if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;*/
 
 						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
@@ -609,16 +603,19 @@
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttsignal_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 1){//tt-others
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttothers_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 2){//w+jets
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(wjets_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 				}
 
@@ -676,15 +673,15 @@
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
-				//histo_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
+				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
-				//histo_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
+				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
-				//histo_Zr[NVar][NStep][nCh]->SetLineWidth(2);
+				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineWidth(2);
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
@@ -767,9 +764,8 @@
 
 				double ymax = 0;
 				ymax = hs[NVar][NStep][nCh]->GetMaximum();
-				hs[NVar][NStep][nCh]->SetMaximum(ymax*10000);
+				hs[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-				//hs[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				hs[NVar][NStep][nCh]->Draw();
 
 				/*ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
@@ -779,6 +775,8 @@
 				  histo_MC[NVar][NStep][nCh]->Draw();*/
 
 				histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
+				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.2);
 				canv_[NVar][NStep][nCh]->Modified();
 
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
@@ -811,7 +809,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				//histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0,1.6,"y");
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.4,1.6,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
