@@ -133,7 +133,9 @@
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/cms/scratch/yjeong/";//KISTI
+
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
@@ -171,8 +173,8 @@
 
 	TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 
-	TString tt_others[nChannel] = {"&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 	TString tt_signal[nChannel] = {"&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
 	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 
@@ -243,9 +245,9 @@
 	  int xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	  int ymin[nVariable] = {300,300,100,100,1100};//====================================variable
 	  */
-	int nbin[nVariable] = {70};//===================================variable
+	int nbin[nVariable] = {50};//===================================variable
 	int xmin[nVariable] = {0};//====================================variable
-	int xmax[nVariable] = {70};//====================================variable
+	int xmax[nVariable] = {50};//====================================variable
 	int ymin[nVariable] = {10};//====================================variable
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
@@ -383,15 +385,12 @@
 				/*histo_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				  histo_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
 				  histo_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
-				//histo_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
-				histo_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
-				histo_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
-				histo_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
-				//histo_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
-				histo_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
-				histo_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
-				histo_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
-				//histo_Zr[NVar][NStep][nCh]->SetLineWidth(2);*/
+				  histo_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
+				  histo_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
+				  histo_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
+				  histo_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
+				  histo_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
+				  histo_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);*/
 
 				/*for(int nMC = 0; nMC < nMonteCal; nMC++){
 				  if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
@@ -462,9 +461,6 @@
 					histo_MC[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
 				}
 
-				/*histo_MC[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
-				  histo_MC[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
-				  histo_MC[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);*/
 				histo_MC[NVar][NStep][nCh]->SetLineWidth(2);
 
 				double nev_Data = 1;
@@ -546,7 +542,6 @@
 
 				for(int tr = 0; tr < nMonteCal; tr++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-					histo_nReweight_MonteCal_gen[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_gen_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
 
@@ -573,20 +568,20 @@
 						if(nCh==2) if(!(channel==3)) continue;
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
-						double PUeventReweight = 1;
-						PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
 						if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
 						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
 						if(tr==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
 						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
 						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
+						double PUeventReweight = 1;
+						PUeventReweight = genweight*tri*mueffweight*eleffweight;
 
 						/*if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
-						if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
-						if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
-						if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
-						if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;*/
+						  if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
+						  if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
+						  if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
+						  if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;*/
 
 						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
@@ -599,19 +594,16 @@
 					if(tr == 0){//tt-signal(visible)
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 1){//tt-others
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 2){//w+jets
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetMarkerColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 				}
@@ -669,15 +661,12 @@
 
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
-				histo_nReweight_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
-				histo_nReweight_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineWidth(2);
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -714,15 +703,15 @@
 				}
 
 				/*double Reweight_SingleTop[n];
-				double Reweight_Diboson[n];
-				double Reweight_Zr[n];
-				double Reweight_ttsignal[n];
-				double Reweight_ttothers[n];
-				double Reweight_wjets[n];
-				double Reweight_totMC[n];
-				double Reweight_DataBin[n];
+				  double Reweight_Diboson[n];
+				  double Reweight_Zr[n];
+				  double Reweight_ttsignal[n];
+				  double Reweight_ttothers[n];
+				  double Reweight_wjets[n];
+				  double Reweight_totMC[n];
+				  double Reweight_DataBin[n];
 
-				double Reweight_RatioBin[n];*/
+				  double Reweight_RatioBin[n];*/
 
 				/*for(int i = 0; i < n; i++){
 				  if(i==61){
@@ -750,15 +739,12 @@
 
 				histo_nReweight_Data[NVar][NStep][nCh]->SetLineColor(1);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetLineWidth(1);
-				histo_nReweight_Data[NVar][NStep][nCh]->SetFillStyle(3001);
-				histo_nReweight_Data[NVar][NStep][nCh]->SetFillColor(14);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerStyle(20);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerSize(1.2);
 
 				//--------------------------------------------------------
 
 				plotpad_[NVar][NStep][nCh]->cd();
-
 				double ymax = 0;
 				ymax = hs[NVar][NStep][nCh]->GetMaximum();
 				hs[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
@@ -772,8 +758,7 @@
 				  histo_MC[NVar][NStep][nCh]->Draw();*/
 
 				histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
-				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.2);
+
 				canv_[NVar][NStep][nCh]->Modified();
 
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
