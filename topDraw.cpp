@@ -575,7 +575,7 @@
 						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
 						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
 						double PUeventReweight = 1;
-						PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
+						PUeventReweight = puweight*tri;
 
 						/*if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
 						  if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
