@@ -575,7 +575,7 @@
 						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
 						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
 						double PUeventReweight = 1;
-						PUeventReweight = genweight*tri*mueffweight*eleffweight;
+						PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
 						/*if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
 						  if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
@@ -678,19 +678,6 @@
 					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
 				}
 
-				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
-
-				/*for(int nMC = 0; nMC < 3; nMC++){
-				  hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);//MC
-				  }*/
-
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);//tt-signal
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);//tt-others
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);//Wjets*/
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
-
 				//---------------------------------------------------------
 
 				histo_nReweight_Data[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Data_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
@@ -746,10 +733,11 @@
 
 				plotpad_[NVar][NStep][nCh]->cd();
 				double ymax = 0;
-				ymax = hs[NVar][NStep][nCh]->GetMaximum();
-				hs[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
-				hs[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
-				hs[NVar][NStep][nCh]->Draw();
+				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
+				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
+				histo_nReweight_Data[NVar][NStep][nCh]->Draw();
 
 				/*ymax = histo_MC[NVar][NStep][nCh]->GetMaximum();
 				  histo_MC[NVar][NStep][nCh]->SetMaximum(ymax*100);
@@ -757,7 +745,17 @@
 				  histo_MC[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				  histo_MC[NVar][NStep][nCh]->Draw();*/
 
-				histo_nReweight_Data[NVar][NStep][nCh]->Draw("same");
+				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
+
+				for(int nMC = 0; nMC < nMonteCal-7; nMC++){
+					hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);//MC
+				}
+
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+
+				hs[NVar][NStep][nCh]->Draw("same");
 
 				canv_[NVar][NStep][nCh]->Modified();
 
