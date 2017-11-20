@@ -131,9 +131,8 @@
 
 	TString PATH_samples;
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
-	PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
+	PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/cms/scratch/yjeong/";//KISTI
 
 	TString Save_dir;
@@ -155,7 +154,7 @@
 	int nvertex, njet, nbjet, event;
 	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight, topPtWeight, weight;
 
-	int gen_partonChannel, gen_partonMode, gen_pseudoChannel, channel;
+	int partonChannel, partonMode, partonMode1, partonMode2, pseudoChannel, channel;
 
 	TLorentzVector* dilep = NULL;
 	TLorentzVector* pseudottbar = NULL;
@@ -173,8 +172,8 @@
 
 	TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 
-	TString tt_signal[nChannel] = {"&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_others[nChannel] = {"&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)","&&!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
 	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 
@@ -233,9 +232,11 @@
 		tree[i]->SetBranchAddress("topPtWeight",&topPtWeight);
 		tree[i]->SetBranchAddress("weight",&weight);
 		tree[i]->SetBranchAddress("channel",&channel);
-		tree[i]->SetBranchAddress("gen_partonChannel",&gen_partonChannel);
-		tree[i]->SetBranchAddress("gen_pseudoChannel",&gen_pseudoChannel);
-		tree[i]->SetBranchAddress("gen_partonMode",&gen_partonMode);
+		tree[i]->SetBranchAddress("partonChannel",&partonChannel);
+		tree[i]->SetBranchAddress("pseudoChannel",&pseudoChannel);
+		tree[i]->SetBranchAddress("partonMode",&partonMode);
+		tree[i]->SetBranchAddress("partonMode1",&partonMode1);
+		tree[i]->SetBranchAddress("partonMode2",&partonMode2);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -252,14 +253,6 @@
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
 	double Reweight_nvertex_ch0_s1[70] = {1,1,1.11669,1.14979,1.53709,1.51114,1.48553,1.46179,1.46213,1.40139,1.40683,1.39015,1.36014,1.33894,1.25762,1.25963,1.19594,1.12766,1.1163,1.05614,0.983319,0.958495,0.90247,0.886433,0.834683,0.750569,0.729631,0.69422,0.646552,0.562234,0.521072,0.446841,0.418525,0.334112,0.367731,0.309285,0.27657,0.208889,0.183123,0.204334,0.176897,0.176332,0.14754,0.153501,0.0957998,0.0699733,0.140008,0.0724668,0.119624,0.131595,0.0720464,0.102486,0.148142,0.0325122,0,0.0907374,0.119604,0,0,0.101252,0.378878,0.136711,0.180665,0,0,0,0.338323,0,0,0};
-
-	double Reweight_nvertex_ch0_s2[70] = {1,1,1.11669,1.14979,1.53709,1.51114,1.48553,1.46179,1.46213,1.40139,1.40683,1.39015,1.36014,1.33894,1.25762,1.25963,1.19594,1.12766,1.1163,1.05614,0.983319,0.958495,0.90247,0.886433,0.834683,0.750569,0.729631,0.69422,0.646552,0.562234,0.521072,0.446841,0.418525,0.334112,0.367731,0.309285,0.27657,0.208889,0.183123,0.204334,0.176897,0.176332,0.14754,0.153501,0.0957998,0.0699733,0.140008,0.0724668,0.119624,0.131595,0.0720464,0.102486,0.148142,0.0325122,0,0.0907374,0.119604,0,0,0.101252,0.378878,0.136711,0.180665,0,0,0,0.338323,0,0,0};
-
-	double Reweight_nvertex_ch0_s3[70] = {1,1,0.703465,1.40019,1.49645,1.47803,1.5314,1.55007,1.592,1.53754,1.44048,1.38773,1.37172,1.35659,1.29884,1.24348,1.19719,1.15386,1.07685,1.03385,0.964184,0.946938,0.910429,0.879424,0.796209,0.770304,0.749509,0.675919,0.638597,0.566006,0.522009,0.43643,0.418617,0.360905,0.357568,0.31299,0.27697,0.242652,0.196638,0.213475,0.1807,0.193461,0.159858,0.129387,0.128425,0.100497,0.113911,0.0718695,0.0825647,0.0562259,0.0498585,0.0895106,0.122015,0.139937,0,0.0951575,0.0961218,0,0,0.167064,0.138257,0.158111,0.192406,0,0,0,0.369809,0,0,0};
-
-	double Reweight_nvertex_ch0_s4[70] = {1,1,0.703465,1.40019,1.49645,1.47803,1.5314,1.55007,1.592,1.53754,1.44048,1.38773,1.37172,1.35659,1.29884,1.24348,1.19719,1.15386,1.07685,1.03385,0.964184,0.946938,0.910429,0.879424,0.796209,0.770304,0.749509,0.675919,0.638597,0.566006,0.522009,0.43643,0.418617,0.360905,0.357568,0.31299,0.27697,0.242652,0.196638,0.213475,0.1807,0.193461,0.159858,0.129387,0.128425,0.100497,0.113911,0.0718695,0.0825647,0.0562259,0.0498585,0.0895106,0.122015,0.139937,0,0.0951575,0.0961218,0,0,0.167064,0.138257,0.158111,0.192406,0,0,0,0.369809,0,0,0};
-
-	double Reweight_nvertex_ch0_s5[70] = {1,1,0.558507,1.39006,1.37191,1.47752,1.48753,1.61026,1.55835,1.53473,1.44318,1.38293,1.35698,1.35568,1.28899,1.25199,1.18833,1.1369,1.07694,1.02453,0.989556,0.932239,0.906399,0.874475,0.797277,0.776935,0.735366,0.676318,0.623836,0.58636,0.522878,0.47006,0.428486,0.379308,0.369805,0.319417,0.27797,0.238575,0.194423,0.210718,0.183796,0.201018,0.154176,0.145329,0.1408,0.0872786,0.107129,0.0756727,0.0951131,0.0545657,0.0804836,0.100963,0.109478,0.156926,0,0.107898,0.103514,0,0,0.100891,0,0.166641,0.212635,0,0,0,0.348525,0,0,0};
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -313,7 +306,7 @@
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]);
-						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]+Form("&& gen_partonMode==%d",nCh));
+						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]+Form("&& partonMode==%d",nCh));
 					}
 
 					if(nMC>1){//etc (except tt-powheg)
@@ -570,19 +563,23 @@
 
 
 						if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
-						if(tr==0&&nCh==0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-signal
-						if(tr==0&&nCh!=0) if(!(gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel)) continue;
-						if(tr==1&&nCh==0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel && gen_partonMode!=0)) continue;//tt-others
-						if(tr==1&&nCh!=0) if((gen_partonChannel==2 && gen_partonMode==gen_pseudoChannel && gen_partonMode==channel)) continue;
+						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
+						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
+
+
+						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;//tt-others
+						if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
+
+
+						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;
+						if(tr==1&&nCh==1) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
+						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;//tt-others
+						if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 						
 						double PUeventReweight = 1;
 						PUeventReweight = puweight*tri;
 
-						/*if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
-						  if(nCh==0 && NStep==1) if(!(PUeventReweight = Reweight_nvertex_ch0_s2[nvertex-1])) continue;
-						  if(nCh==0 && NStep==2) if(!(PUeventReweight = Reweight_nvertex_ch0_s3[nvertex-1])) continue;
-						  if(nCh==0 && NStep==3) if(!(PUeventReweight = Reweight_nvertex_ch0_s4[nvertex-1])) continue;
-						  if(nCh==0 && NStep==4) if(!(PUeventReweight = Reweight_nvertex_ch0_s5[nvertex-1])) continue;*/
+						//if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
 
 						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
