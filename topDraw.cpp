@@ -743,13 +743,13 @@
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 
-				for(int nMC = 0; nMC < nMonteCal-7; nMC++){
-					hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);//MC
-				}
-
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
+
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);
 
 				hs[NVar][NStep][nCh]->Draw("same");
 
@@ -785,7 +785,7 @@
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
 				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.16);
-				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.5,1.8,"y");
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.5,1.5,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
