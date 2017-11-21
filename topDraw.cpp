@@ -87,7 +87,7 @@
 	float lx2 = 0.95;
 	float ly2 = 0.86;
 
-	const int StepNum = 5;//Step Num total:5
+	const int StepNum = 1;//Step Num total:5
 	const int nVariable = 1;//number of Variable 
 	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
@@ -161,27 +161,30 @@
 	TLorentzVector* lep1 = NULL;
 	TLorentzVector* lep2 = NULL;
 
-	TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
+	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
+	TString Step_Cut[StepNum] = {"step"};
 
 	TString TCut_base;
 	TString weight_cut;
 	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
 	weight_cut = "*genweight";//check, reduced wjet,z-gamma.
 
-	TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
+	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
+	TString Advanced_cut[StepNum] = {""};
 
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
-	TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
+	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
+	TString Step_txt[StepNum] = {"step1"};
 
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
 	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable
 
-	TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//Dilepton,MuEl,ElEl,MuMu;
-	TString Channel_txt[nChannel] = {"e#pm#mu#mp","e#pme#mp","#mu#pm#mu#mp","Dilepton"};
+	TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
+	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
@@ -580,10 +583,10 @@
 						//if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
 
 						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						/*if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);*/
 						//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
 					}
 
