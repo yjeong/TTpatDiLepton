@@ -89,7 +89,7 @@
 
 	const int StepNum = 1;//Step Num total:5
 	const int nVariable = 1;//number of Variable 
-	const int nChannel = 4;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
+	const int nChannel = 1;//total: 4 ---> Dilepton, MuEl, ElEl, MuMu.
 	//int NJet[] = {4,5,6,7,8,9,10};
 	//int NJet[] = {6};
 	const int nMonteCal = 10;
@@ -137,7 +137,8 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
-	TString Variable[nVariable] = {"nvertex"};//==================================variable
+	//TString Variable[nVariable] = {"nvertex"};//==================================variable
+	TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -152,7 +153,7 @@
 	int nvertex, njet, nbjet, event;
 	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight, topPtWeight, weight;
 
-	int partonChannel, partonMode, partonMode1, partonMode2, pseudoChannel, channel;
+	int partonChannel, partonMode, partonMode1, partonMode2, pseudoChannel, channel, lep1_pid;
 
 	TLorentzVector* dilep = NULL;
 	TLorentzVector* pseudottbar = NULL;
@@ -162,29 +163,35 @@
 	TLorentzVector* lep2 = NULL;
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step"};
+	TString Step_Cut[StepNum] = {"step>=4"};
 
 	TString TCut_base;
 	TString weight_cut;
-	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
+	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20 &&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
 	weight_cut = "*genweight";//check, reduced wjet,z-gamma.
 
 	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 	TString Advanced_cut[StepNum] = {""};
 
-	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
 	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
-	TString Step_txt[StepNum] = {"step1"};
+	TString Step_txt[StepNum] = {"step4"};
 
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable
+	//TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	//TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable
+	TString Ytitle[nVariable] = {"Events"};//=====================================variable
+	TString Xtitle[nVariable] = {"P_{T}^{lep}"};//========================================variable
 
-	TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};
+	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
+	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};
+	TString Channel_Cut[nChannel] = {"&&channel==1"};//MuEl,ElEl,MuMu, Dilepton;
+	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
@@ -238,6 +245,7 @@
 		tree[i]->SetBranchAddress("partonMode",&partonMode);
 		tree[i]->SetBranchAddress("partonMode1",&partonMode1);
 		tree[i]->SetBranchAddress("partonMode2",&partonMode2);
+		tree[i]->SetBranchAddress("lep1_pid",&lep1_pid);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -247,13 +255,16 @@
 	  int xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	  int ymin[nVariable] = {300,300,100,100,1100};//====================================variable
 	  */
-	int nbin[nVariable] = {50};//===================================variable
+	/*int nbin[nVariable] = {50};//===================================variable
 	int xmin[nVariable] = {0};//====================================variable
 	int xmax[nVariable] = {50};//====================================variable
+	int ymin[nVariable] = {10};//====================================variable*/
+	int nbin[nVariable] = {10};//===================================variable
+	int xmin[nVariable] = {20};//====================================variable
+	int xmax[nVariable] = {300};//====================================variable
 	int ymin[nVariable] = {10};//====================================variable
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
-	double Reweight_nvertex_ch0_s1[70] = {1,1,1.11669,1.14979,1.53709,1.51114,1.48553,1.46179,1.46213,1.40139,1.40683,1.39015,1.36014,1.33894,1.25762,1.25963,1.19594,1.12766,1.1163,1.05614,0.983319,0.958495,0.90247,0.886433,0.834683,0.750569,0.729631,0.69422,0.646552,0.562234,0.521072,0.446841,0.418525,0.334112,0.367731,0.309285,0.27657,0.208889,0.183123,0.204334,0.176897,0.176332,0.14754,0.153501,0.0957998,0.0699733,0.140008,0.0724668,0.119624,0.131595,0.0720464,0.102486,0.148142,0.0325122,0,0.0907374,0.119604,0,0,0.101252,0.378878,0.136711,0.180665,0,0,0,0.338323,0,0,0};
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -288,7 +299,7 @@
 				ratiopad_[NVar][NStep][nCh]->Draw();
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				//plotpad_[NVar][NStep][nCh]->SetLogy();
+				plotpad_[NVar][NStep][nCh]->SetLogy();
 				plotpad_[NVar][NStep][nCh]->RedrawAxis();
 
 				gPad->SetBottomMargin(0);
@@ -534,13 +545,10 @@
 				histo_nReweight_Diboson[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Diboson_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_nReweight_Zr[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Zr_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
-				double PUeventReweight = 1;
 				for(int tr = 0; tr < nMonteCal; tr++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
-
-						if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 
 						if(dilep == NULL ) continue;
 						if(pseudottbar == NULL) continue;
@@ -549,13 +557,15 @@
 						if(lep1 == NULL) continue;
 						if(lep2 == NULL) continue;
 
+						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
+
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
 						if(nCh==2) if(!(channel==3)) continue;
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
 
-
-						if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
+						if(!(tri!=0&&filtered==1&&is3lep==2 && lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
 						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
 						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
@@ -563,22 +573,15 @@
 						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;//tt-others
 						if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
-
 						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;
 						if(tr==1&&nCh==1) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
 						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;//tt-others
 						if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 
+						double PUeventReweight = 1;
 						PUeventReweight = puweight*tri;
 
-						//if(nCh==0 && NStep==0) if(!(PUeventReweight = Reweight_nvertex_ch0_s1[nvertex-1])) continue;
-
-						if(NStep==0 && step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						/*if(NStep==1 && step>=2)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						  if(NStep==2 && step>=3)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						  if(NStep==3 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						  if(NStep==4 && step>=5)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);*/
-						//cout<<"single_cut_var: "<<single_cut_var[0]<<endl;
+						if(NStep==0 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
 
 					if(tr == 0){//tt-signal(visible)
@@ -729,17 +732,23 @@
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+				/*hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);*/
+
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
+				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
-				histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
+				histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
