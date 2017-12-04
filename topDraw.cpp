@@ -136,9 +136,12 @@
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
+	int lep1_pt = 1, lep1_eta = 0;//PUeventReweighting variable
+
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 	//TString Variable[nVariable] = {"nvertex"};//==================================variable
 	TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
+	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -167,8 +170,8 @@
 
 	TString TCut_base;
 	TString weight_cut;
-	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20 &&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
-	weight_cut = "*genweight";//check, reduced wjet,z-gamma.
+	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2 && lep1.Pt()>20 &&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
+	//weight_cut = "*genweight";//check, reduced wjet,z-gamma.
 
 	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 	TString Advanced_cut[StepNum] = {""};
@@ -183,14 +186,16 @@
 
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-	//TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	//TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable
+	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
 	TString Ytitle[nVariable] = {"Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"P_{T}^{lep}"};//========================================variable
+	TString Xtitle[nVariable] = {"p_{T}^{lep}"};//========================================variable*/
+	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
+	TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
-	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};
-	TString Channel_Cut[nChannel] = {"&&channel==1"};//MuEl,ElEl,MuMu, Dilepton;
+	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
+	TString Channel_Cut[nChannel] = {"&&channel==1"};//MuEl
 	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
@@ -251,18 +256,23 @@
 	/////////////////////////////////////////////////////////////////////////////
 
 	/*int nbin[nVariable] = {70,60,10,6,10};//===================================variable
-	  int xmin[nVariable] = {0,20,0,0,300};//====================================variable
-	  int xmax[nVariable] = {70,320,10,6,1200};//====================================variable
-	  int ymin[nVariable] = {300,300,100,100,1100};//====================================variable
+	  float xmin[nVariable] = {0,20,0,0,300};//====================================variable
+	  float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
+	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable
 	  */
 	/*int nbin[nVariable] = {50};//===================================variable
-	int xmin[nVariable] = {0};//====================================variable
-	int xmax[nVariable] = {50};//====================================variable
-	int ymin[nVariable] = {10};//====================================variable*/
-	int nbin[nVariable] = {10};//===================================variable
+	  float xmin[nVariable] = {0};//====================================variable
+	  float xmax[nVariable] = {50};//====================================variable
+	  float ymin[nVariable] = {10};//====================================variable*/
+	int nbin[nVariable] = {9};//===================================variable
 	int xmin[nVariable] = {20};//====================================variable
-	int xmax[nVariable] = {300};//====================================variable
-	int ymin[nVariable] = {10};//====================================variable
+	int xmax[nVariable] = {200};//====================================variable
+	int ymin[nVariable] = {100};//====================================variable*/
+
+	/*int nbin[nVariable] = {10};//===================================variable
+	  float xmin[nVariable] = {-2.5};//====================================variable
+	  float xmax[nVariable] = {2.5};//====================================variable
+	  float ymin[nVariable] = {100};//====================================variable*/
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
 
@@ -312,18 +322,18 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==0){//tt-signal (visible)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_signal[nCh]+Advanced_cut[NStep]);
+						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_signal[nCh]+Advanced_cut[NStep]);
 					}
 
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]);
-						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+tt_others[nCh]+Advanced_cut[NStep]+Form("&& partonMode==%d",nCh));
+						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]);
+						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]+Form("&& partonMode==%d",nCh));
 					}
 
 					if(nMC>1){//etc (except tt-powheg)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+weight_cut+Advanced_cut[NStep]);
+						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+Advanced_cut[NStep]);
 					}
 
 					//histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineWidth(2);
@@ -558,7 +568,8 @@
 						if(lep2 == NULL) continue;
 
 						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
-						if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
+						if(lep1_pt)if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
+						if(lep1_eta)if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Eta();}
 
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
