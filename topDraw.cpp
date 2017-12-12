@@ -5,8 +5,9 @@
 	gStyle->SetOptDate(0);//display date position
 	/*gStyle->SetCanvasDefH(600);//Height of canvas
 	  gStyle->SetCanvasDefW(600);//Width of canvas
-	  gStyle->SetCanvasDefX(0);//POsition on screen
+	  gStyle->SetCanvasDefX(0);//Position on screen
 	  gStyle->SetCanvasDefY(0);*/
+	gStyle->SetPalette(0);
 
 	gStyle->SetPadLeftMargin(0.12);
 	gStyle->SetPadRightMargin(0.02);
@@ -170,7 +171,7 @@
 
 	TString TCut_base;
 	TString weight_cut;
-	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2 && lep1.Pt()>20 &&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
+	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
 	//weight_cut = "*genweight";//check, reduced wjet,z-gamma.
 
 	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
@@ -187,11 +188,11 @@
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
 	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
+	  TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
 	TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"p_{T}^{lep}"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
-	TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
+	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
@@ -568,8 +569,8 @@
 						if(lep2 == NULL) continue;
 
 						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
-						if(lep1_pt)if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
-						if(lep1_eta)if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Eta();}
+						if(lep1_pt) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
+						if(lep1_eta) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Eta();}
 
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
@@ -580,7 +581,6 @@
 						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
 						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
-
 						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;//tt-others
 						if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
@@ -589,10 +589,11 @@
 						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;//tt-others
 						if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 
-						double PUeventReweight = 1;
+						float PUeventReweight = 1;
 						PUeventReweight = puweight*tri;
+						//PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
-						if(NStep==0 && step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
 
 					if(tr == 0){//tt-signal(visible)
@@ -742,13 +743,6 @@
 				plotpad_[NVar][NStep][nCh]->cd();
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
-
-				/*hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);*/
 
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);
 				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
