@@ -190,7 +190,7 @@
 	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
 	TString Ytitle[nVariable] = {"Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"p_{T}^{lep}"};//========================================variable*/
+	TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
 
