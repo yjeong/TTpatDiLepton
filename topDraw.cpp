@@ -132,12 +132,13 @@
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
 	PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
 	//PATH_samples = "/cms/scratch/yjeong/";//KISTI
 
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	int lep1_pt = 1, lep1_eta = 0;//PUeventReweighting variable
+	int nVertex = 0, lep1_pt = 1, lep1_eta = 0;//PUeventReweighting variable
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 	//TString Variable[nVariable] = {"nvertex"};//==================================variable
@@ -259,8 +260,7 @@
 	/*int nbin[nVariable] = {70,60,10,6,10};//===================================variable
 	  float xmin[nVariable] = {0,20,0,0,300};//====================================variable
 	  float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
-	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable
-	  */
+	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
 	/*int nbin[nVariable] = {50};//===================================variable
 	  float xmin[nVariable] = {0};//====================================variable
 	  float xmax[nVariable] = {50};//====================================variable
@@ -569,6 +569,7 @@
 						if(lep2 == NULL) continue;
 
 						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
+						if(nVertex) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 						if(lep1_pt) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
 						if(lep1_eta) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Eta();}
 
