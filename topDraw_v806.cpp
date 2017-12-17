@@ -131,9 +131,10 @@
 	TString PATH_samples;
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
 	PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
-	//PATH_samples = "/cms/scratch/yjeong/";//KISTI
 
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
@@ -594,7 +595,8 @@
 						PUeventReweight = puweight*tri;
 						//PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
-						if(step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(lep1_pt || lep1_eta)if(step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						if(nVertex)if(step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
 
 					if(tr == 0){//tt-signal(visible)
