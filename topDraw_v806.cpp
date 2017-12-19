@@ -569,10 +569,11 @@
 						if(lep1 == NULL) continue;
 						if(lep2 == NULL) continue;
 
-						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
-						if(nVertex) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
-						if(lep1_pt) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Pt();}
-						if(lep1_eta) if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = lep1->Eta();}
+						tree[tr]->GetEntry(nev);
+
+						if(nVertex) if(NVar==0) single_cut_var[NVar][tr] = nvertex;
+						if(lep1_pt) if(NVar==0) single_cut_var[NVar][tr] = lep1->Pt();
+						if(lep1_eta) if(NVar==0) single_cut_var[NVar][tr] = lep1->Eta();
 
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
