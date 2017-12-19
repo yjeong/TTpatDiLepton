@@ -329,8 +329,8 @@
 
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						if(nCh==0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]);
-						if(nCh!=0)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]+Form("&& partonMode==%d",nCh));
+						if(nCh!=3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]);
+						if(nCh==3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]+Form("&& !(partonChannel==2 && partonMode==pseudoChannel &&partonMode==%d)",nCh));
 					}
 
 					if(nMC>1){//etc (except tt-powheg)
