@@ -139,11 +139,11 @@
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	int nVertex = 0, lep1_pt = 1, lep1_eta = 0;//PUeventReweighting variable
+	int nVertex = 1, lep1_pt = 0, lep1_eta = 0;//PUeventReweighting variable choose one set 1
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
-	//TString Variable[nVariable] = {"nvertex"};//==================================variable
-	TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
+	TString Variable[nVariable] = {"nvertex"};//==================================variable
+	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
@@ -169,7 +169,7 @@
 	TLorentzVector* lep2 = NULL;
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=4"};
+	TString Step_Cut[StepNum] = {"step>=1"};
 
 	TString TCut_base;
 	TString weight_cut;
@@ -185,13 +185,13 @@
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 
 	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
-	TString Step_txt[StepNum] = {"step4"};
+	TString Step_txt[StepNum] = {"step1"};
 
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
-	TString Ytitle[nVariable] = {"Events"};//=====================================variable
+	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
@@ -262,11 +262,11 @@
 	  float xmin[nVariable] = {0,20,0,0,300};//====================================variable
 	  float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
-	/*int nbin[nVariable] = {50};//===================================variable
+	int nbin[nVariable] = {50};//===================================variable
 	  float xmin[nVariable] = {0};//====================================variable
 	  float xmax[nVariable] = {50};//====================================variable
 	  float ymin[nVariable] = {10};//====================================variable*/
-	int nbin[nVariable] = {9};//===================================variable
+	/*int nbin[nVariable] = {9};//===================================variable
 	int xmin[nVariable] = {20};//====================================variable
 	int xmax[nVariable] = {200};//====================================variable
 	int ymin[nVariable] = {100};//====================================variable*/
@@ -311,7 +311,7 @@
 				ratiopad_[NVar][NStep][nCh]->Draw();
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				plotpad_[NVar][NStep][nCh]->SetLogy();
+				if(lep1_pt || lep1_eta)plotpad_[NVar][NStep][nCh]->SetLogy();
 				plotpad_[NVar][NStep][nCh]->RedrawAxis();
 
 				gPad->SetBottomMargin(0);
@@ -756,7 +756,8 @@
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
-				histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
+				if(lep1_pt || lep1_eta) histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
+				if(nVertex) histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
