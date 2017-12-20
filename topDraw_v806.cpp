@@ -132,14 +132,14 @@
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
-	PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
+	//PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
+	PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
 
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	int nVertex = 1, lep1_pt = 0, lep1_eta = 0;//PUeventReweighting variable choose one set 1
+	int nVertex = 1, lep1_pt = 0, lep1_eta = 0;//PUeventReweighting variable
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 	TString Variable[nVariable] = {"nvertex"};//==================================variable
@@ -159,12 +159,9 @@
 	int nvertex, njet, nbjet, event;
 	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight, topPtWeight, weight;
 
-	int partonChannel, partonMode, partonMode1, partonMode2, pseudoChannel, channel, lep1_pid;
+	int partonChannel, partonMode1, partonMode2, channel, lep1_pid;
 
 	TLorentzVector* dilep = NULL;
-	TLorentzVector* pseudottbar = NULL;
-	TLorentzVector* pseudojet1 = NULL;
-	TLorentzVector* pseudojet2 = NULL;
 	TLorentzVector* lep1 = NULL;
 	TLorentzVector* lep2 = NULL;
 
@@ -174,15 +171,16 @@
 	TString TCut_base;
 	TString weight_cut;
 	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
+	//TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
 	//weight_cut = "*genweight";//check, reduced wjet,z-gamma.
 
 	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 	TString Advanced_cut[StepNum] = {""};
 
-	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)","&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)","&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
 	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 	TString Step_txt[StepNum] = {"step1"};
@@ -226,9 +224,6 @@
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
 		//for(int l1 = 0; l1 < Var_float_size; l1++) tree[i]->SetBranchAddress(Var_float[l1],var_float[l1]);
 		tree[i]->SetBranchAddress("dilep",&dilep);
-		tree[i]->SetBranchAddress("pseudottbar",&pseudottbar);
-		tree[i]->SetBranchAddress("pseudojet1",&pseudojet1);
-		tree[i]->SetBranchAddress("pseudojet2",&pseudojet2);
 		tree[i]->SetBranchAddress("lep1",&lep1);
 		tree[i]->SetBranchAddress("lep2",&lep2);
 		tree[i]->SetBranchAddress("event",&event);
@@ -249,8 +244,6 @@
 		tree[i]->SetBranchAddress("weight",&weight);
 		tree[i]->SetBranchAddress("channel",&channel);
 		tree[i]->SetBranchAddress("partonChannel",&partonChannel);
-		tree[i]->SetBranchAddress("pseudoChannel",&pseudoChannel);
-		tree[i]->SetBranchAddress("partonMode",&partonMode);
 		tree[i]->SetBranchAddress("partonMode1",&partonMode1);
 		tree[i]->SetBranchAddress("partonMode2",&partonMode2);
 		tree[i]->SetBranchAddress("lep1_pid",&lep1_pid);
@@ -330,7 +323,7 @@
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						if(nCh!=3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]);
-						if(nCh==3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+Advanced_cut[NStep]+Form("&& !(partonChannel==2 && partonMode==pseudoChannel &&partonMode==%d)",nCh));
+						//if(nCh==3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]+Form("&& !(partonChannel==2 && partonMode==pseudoChannel && partonMode1==%d)",nCh));
 					}
 
 					if(nMC>1){//etc (except tt-powheg)
@@ -432,7 +425,8 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC<=2){
 						MonteCal_ev = histo_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
-						Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
+						//Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
+						Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->GetEntries();
 						cout<<Legend_Name[nMC]<<" yield : "<<Int_MonteCal[nMC]<<", err : "<<sqrt(MonteCal_ev)<<endl;
 						total_1 += Int_MonteCal[nMC];
 					}
@@ -557,42 +551,41 @@
 				histo_nReweight_Diboson[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Diboson_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_nReweight_Zr[NVar][NStep][nCh] = new TH1F(Form("histo_nReweight_Zr_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
+				float PUeventReweight = 1;
 				for(int tr = 0; tr < nMonteCal; tr++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
 
 						if(dilep == NULL ) continue;
-						if(pseudottbar == NULL) continue;
-						if(pseudojet1 == NULL) continue;
-						if(pseudojet2 == NULL) continue;
 						if(lep1 == NULL) continue;
 						if(lep2 == NULL) continue;
 
 						tree[tr]->GetEntry(nev);
 
-						if(nVertex) if(NVar==0) single_cut_var[NVar][tr] = nvertex;
-						if(lep1_pt) if(NVar==0) single_cut_var[NVar][tr] = lep1->Pt();
-						if(lep1_eta) if(NVar==0) single_cut_var[NVar][tr] = lep1->Eta();
+						if(nVertex) if(NVar==0) {single_cut_var[NVar][tr] = nvertex;}
+						if(lep1_pt) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Pt();}
+						if(lep1_eta) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
 
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
 						if(nCh==2) if(!(channel==3)) continue;
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
+						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 
-						if(!(tri!=0&&filtered==1&&is3lep==2 && lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
+						if(!(tri!=0&&filtered==1&&is3lep==2&& lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
+						//if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
 						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
 						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
 						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;//tt-others
-						if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
+						//if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
 						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;
 						if(tr==1&&nCh==1) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
 						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;//tt-others
-						if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
+						//if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 
-						float PUeventReweight = 1;
 						PUeventReweight = puweight*tri;
 						//PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
@@ -757,8 +750,8 @@
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
-				if(lep1_pt || lep1_eta) histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
-				if(nVertex) histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
+				if(lep1_pt || lep1_eta)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
+				if(nVertex)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
@@ -805,7 +798,7 @@
 				  rp->Draw();
 				  canv_[NVar][NStep][nCh]->Update();*/
 				canv_[NVar][NStep][nCh]->cd();
-				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+"_v806.png");
+				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
 				//canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".C");
 			}
 		}
