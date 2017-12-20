@@ -177,10 +177,10 @@
 	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
 	TString Advanced_cut[StepNum] = {""};
 
-	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)","&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)","&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
+	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
+	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
 	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
 	TString Step_txt[StepNum] = {"step1"};
