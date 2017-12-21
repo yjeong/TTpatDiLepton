@@ -133,18 +133,22 @@
 	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
 	//PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
-	PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
+	//PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
+	PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
 
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
-	int nVertex = 1, lep1_pt = 0, lep1_eta = 0;//PUeventReweighting variable
+	//---------------------------select choose one------------------------
+	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;
+	int step_1 = 0, step_2 = 0, step_3 = 0, step_4 = 1, step_5 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
-	TString Variable[nVariable] = {"nvertex"};//==================================variable
+
+	//TString Variable[nVariable] = {"nvertex"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
+	TString Variable[nVariable] = {"dilep.M()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -166,7 +170,7 @@
 	TLorentzVector* lep2 = NULL;
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=1"};
+	TString Step_Cut[StepNum] = {"step>=4"};
 
 	TString TCut_base;
 	TString weight_cut;
@@ -182,17 +186,17 @@
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
-	//TString Step_txt[StepNum] = {"step1","step2","step3","step4","step5"};
-	TString Step_txt[StepNum] = {"step1"};
-
 	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
 	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	  TString Xtitle[nVariable] = {"Number of good vertices"};//========================================variable*/
+
+	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
+	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
+	TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
+	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
@@ -255,18 +259,25 @@
 	  float xmin[nVariable] = {0,20,0,0,300};//====================================variable
 	  float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
-	int nbin[nVariable] = {50};//===================================variable
-	  float xmin[nVariable] = {0};//====================================variable
-	  float xmax[nVariable] = {50};//====================================variable
-	  float ymin[nVariable] = {10};//====================================variable*/
+
+	/*int nbin[nVariable] = {50};//===================================variable
+	float xmin[nVariable] = {0};//====================================variable
+	float xmax[nVariable] = {50};//====================================variable
+	float ymin[nVariable] = {10};//====================================variable*/
+
 	/*int nbin[nVariable] = {9};//===================================variable
-	int xmin[nVariable] = {20};//====================================variable
-	int xmax[nVariable] = {200};//====================================variable
-	int ymin[nVariable] = {100};//====================================variable*/
+	  int xmin[nVariable] = {20};//====================================variable
+	  int xmax[nVariable] = {200};//====================================variable
+	  int ymin[nVariable] = {100};//====================================variable*/
 
 	/*int nbin[nVariable] = {10};//===================================variable
 	  float xmin[nVariable] = {-2.5};//====================================variable
 	  float xmax[nVariable] = {2.5};//====================================variable
+	  float ymin[nVariable] = {100};//====================================variable*/
+
+	int nbin[nVariable] = {60};//===================================variable
+	  float xmin[nVariable] = {20};//====================================variable
+	  float xmax[nVariable] = {320};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
@@ -304,7 +315,7 @@
 				ratiopad_[NVar][NStep][nCh]->Draw();
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				if(lep1_pt || lep1_eta)plotpad_[NVar][NStep][nCh]->SetLogy();
+				if(lep1_pt || lep1_eta || dilep_m)plotpad_[NVar][NStep][nCh]->SetLogy();
 				plotpad_[NVar][NStep][nCh]->RedrawAxis();
 
 				gPad->SetBottomMargin(0);
@@ -363,7 +374,7 @@
 				const double lumi = 35.9*1000;//pb-1
 				//const double lumi = 2.22*1000;//pb-1
 				cout<<""<<endl;
-				cout<<"---------------------------------------"<<Channel_txt[nCh]<<", "<<Variable[NVar]<<", "<<Step_txt[NStep]<<"-------------------------------------"<<endl;
+				cout<<"---------------------------------------"<<Channel_txt[nCh]<<", "<<Variable[NVar]<<", "<<Step_Cut[NStep]<<"-------------------------------------"<<endl;
 
 				cout<<"lumi : "<<lumi<<" pb-1"<<endl;
 				cout<<""<<endl;
@@ -519,7 +530,7 @@
 				  histo_RealData[NVar][NStep][nCh]->Draw("same");
 				  canv_[NVar][NStep][nCh]->Modified();
 
-				  lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
+				  lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_Cut[NStep]);
 				  lt2.DrawLatex(x_1,y_1,"CMS");
 				  lt3.DrawLatex(x_2,y_2,"Preliminary");
 				  lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
@@ -566,31 +577,36 @@
 						if(nVertex) if(NVar==0) {single_cut_var[NVar][tr] = nvertex;}
 						if(lep1_pt) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Pt();}
 						if(lep1_eta) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
+						if(dilep_m) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
 
 						if(nCh==0) if(!(channel==1)) continue;
 						if(nCh==1) if(!(channel==2)) continue;
 						if(nCh==2) if(!(channel==3)) continue;
 						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
-						//if(NVar==0) {tree[tr]->GetEntry(nev); single_cut_var[NVar][tr] = nvertex;}
 
 						if(!(tri!=0&&filtered==1&&is3lep==2&& lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
 						//if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
 						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
 						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
-						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;//tt-others
+						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
 						//if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
-						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;
+						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
 						if(tr==1&&nCh==1) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
-						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;//tt-others
+						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
 						//if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
+
+						if(step_1) if(!(step>=1)) continue;
+						if(step_2) if(!(step>=2)) continue;
+						if(step_3) if(!(step>=3)) continue;
+						if(step_4) if(!(step>=4)) continue;
+						if(step_5) if(!(step>=5)) continue;
 
 						PUeventReweight = puweight*tri;
 						//PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
-						if(lep1_pt || lep1_eta)if(step>=4)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
-						if(nVertex)if(step>=1)histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
 
 					if(tr == 0){//tt-signal(visible)
@@ -750,7 +766,7 @@
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
-				if(lep1_pt || lep1_eta)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
+				if(lep1_pt || lep1_eta || dilep_m)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
 				if(nVertex)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
@@ -761,7 +777,7 @@
 
 				canv_[NVar][NStep][nCh]->Modified();
 
-				//lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_txt[NStep]);
+				//lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]+"_"+Step_Cut[NStep]);
 				lt1.DrawLatex(xx_1,yy_1,Channel_txt[nCh]);
 				lt2.DrawLatex(x_1,y_1,"CMS");
 				lt3.DrawLatex(x_2,y_2,"Preliminary");
@@ -798,8 +814,8 @@
 				  rp->Draw();
 				  canv_[NVar][NStep][nCh]->Update();*/
 				canv_[NVar][NStep][nCh]->cd();
-				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".png");
-				//canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_txt[NStep]+".C");
+				canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_Cut[NStep]+".png");
+				//canv_[NVar][NStep][nCh]->SaveAs(Save_dir+Variable[NVar]+"_"+Channel_txt[nCh]+"_"+Step_Cut[NStep]+".C");
 			}
 		}
 	}
