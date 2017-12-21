@@ -140,8 +140,8 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select choose one------------------------
-	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;
-	int step_1 = 0, step_2 = 0, step_3 = 0, step_4 = 1, step_5 = 0;
+	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;//switch 0->1
+	int step_1 = 0, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 1;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
@@ -170,16 +170,12 @@
 	TLorentzVector* lep2 = NULL;
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=4"};
+	TString Step_Cut[StepNum] = {"step>=5"};
 
 	TString TCut_base;
 	TString weight_cut;
 	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
 	//TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
-	//weight_cut = "*genweight";//check, reduced wjet,z-gamma.
-
-	//TString Advanced_cut[StepNum] = {"","","","","&&pseudojet1.Pt()>30&&pseudojet2.Pt()>30&&lep1.Pt()>20&&lep2.Pt()>20"};
-	TString Advanced_cut[StepNum] = {""};
 
 	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
@@ -208,7 +204,7 @@
 	const int Sample_Num = 13;//=======================================check
 	TString Sample_name[Sample_Num] = {"TT_powheg","TT_powheg","WJets","SingleTbar_tW","SingleTop_tW","ZZ","WW","WZ","DYJets","DYJets_10to50","MuonEG_Run2016","DoubleEG_Run2016","DoubleMuon_Run2016"};//===============================check
 
-	TString Legend_Name[Sample_Num] = {"t#bar{t}-signal (visible)","t#bar{t}-others","W+Jets","Single Top","Single Top","Diboson","Diboson","Diboson","Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}"};//===============================check
+	TString Legend_Name[Sample_Num] = {"t#bar{t}-signal","t#bar{t}-others","W+Jets","Single Top","Single Top","Diboson","Diboson","Diboson","Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}"};//===============================check
 
 	TFile *tfile[Sample_Num];
 
@@ -328,18 +324,18 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==0){//tt-signal (visible)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_signal[nCh]+Advanced_cut[NStep]);
+						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_signal[nCh]);
 					}
 
 					if(nMC==1){//tt-others
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						if(nCh!=3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]);
-						//if(nCh==3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Advanced_cut[NStep]+Form("&& !(partonChannel==2 && partonMode==pseudoChannel && partonMode1==%d)",nCh));
+						if(nCh!=3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]);
+						//if(nCh==3)tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+tt_others[nCh]+Form("&& !(partonChannel==2 && partonMode==pseudoChannel && partonMode1==%d)",nCh));
 					}
 
 					if(nMC>1){//etc (except tt-powheg)
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
-						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base+Advanced_cut[NStep]);
+						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base);
 					}
 
 					//histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineWidth(2);
