@@ -121,7 +121,22 @@
 
 	TH1F *histo_nReweight_Data[StepNum][nVariable][nChannel];
 
-	//-----------------------------------------------------------
+	//-----------------------------DYEstimation------------------------------------
+
+	TH1F *rd_ee_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *rd_mm_in[StepNum][nVariable][nChannel][nMonteCal];
+
+	TH1F *mc_ee_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *mc_mm_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *mc_ee_out[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *mc_mm_out[StepNum][nVariable][nChannel][nMonteCal];
+
+	TH1F *front_mc_ee_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *front_mc_mm_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *front_mc_ee_out[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *front_mc_mm_out[StepNum][nVariable][nChannel][nMonteCal];
+
+	//-----------------------------------------------------------------------------
 
 	TCanvas *canv_[StepNum][nVariable][nChannel];
 	TPad *plotpad_[StepNum][nVariable][nChannel];
@@ -140,15 +155,15 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select choose one------------------------
-	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;//switch 0->1
-	int step_1 = 0, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 1;
+	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
+	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
-	//TString Variable[nVariable] = {"nvertex"};//==================================variable
+	TString Variable[nVariable] = {"nvertex"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
-	TString Variable[nVariable] = {"dilep.M()"};//==================================variable
+	//TString Variable[nVariable] = {"dilep.M()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -169,8 +184,13 @@
 	TLorentzVector* lep1 = NULL;
 	TLorentzVector* lep2 = NULL;
 
+	TString dycut;
+	TString dyvar;
+	dycut = "*(step1==1)";
+	dyvar = "tri";
+
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=5"};
+	TString Step_Cut[StepNum] = {"step>=1"};
 
 	TString TCut_base;
 	TString weight_cut;
@@ -182,16 +202,13 @@
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
-	//TString Ytitle[nVariable] = {"Number of Events","Events / 5 GeV","Events","Events","Events / 90 GeV"};//=====================================variable
-	//TString Xtitle[nVariable] = {"Number of good vertices","M(ll) [GeV]","Jet Multiplicity","b Jet Multiplicity","M^{t#tbar{t}}"};//========================================variable
-
-	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
-	TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
+	/*TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
 	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
@@ -251,12 +268,12 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	/*int nbin[nVariable] = {70,60,10,6,10};//===================================variable
-	  float xmin[nVariable] = {0,20,0,0,300};//====================================variable
-	  float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
-	  float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
+	//int nbin[nVariable] = {70,60,10,6,10};//===================================variable
+	//float xmin[nVariable] = {0,20,0,0,300};//====================================variable
+	//float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
+	//float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
 
-	/*int nbin[nVariable] = {50};//===================================variable
+	int nbin[nVariable] = {50};//===================================variable
 	float xmin[nVariable] = {0};//====================================variable
 	float xmax[nVariable] = {50};//====================================variable
 	float ymin[nVariable] = {10};//====================================variable*/
@@ -271,12 +288,15 @@
 	  float xmax[nVariable] = {2.5};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
 
-	int nbin[nVariable] = {60};//===================================variable
+	/*int nbin[nVariable] = {60};//===================================variable
 	  float xmin[nVariable] = {20};//====================================variable
 	  float xmax[nVariable] = {320};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
+
+	double kMM[nRealData] = {0,};
+	double kEE[nRealData] = {0,};
 
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
@@ -319,6 +339,45 @@
 				histo_SingleTop[NVar][NStep][nCh] = new TH1F(Form("histo_SingleTop_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_Diboson[NVar][NStep][nCh] = new TH1F(Form("histo_Diboson_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_Zr[NVar][NStep][nCh] = new TH1F(Form("histo_Zr_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				////////////////////////////////////////////DYEstimation///////////////////////////////////////
+
+				for(int nReal = 0; nReal < nRealData; nReal++){
+					rd_ee_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),2,0,2);
+					tree[nReal+10]->Project(Form("rd_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
+					rd_mm_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),2,0,2);
+					tree[nReal+10]->Project(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
+					kEE[nReal] = sqrt(rd_ee_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_mm_in[NVar][NStep][nCh][nReal]->Integral())/2.;
+					kMM[nReal] = sqrt(rd_mm_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_ee_in[NVar][NStep][nCh][nReal]->Integral())/2.;
+					cout<<""<<endl;
+					cout<<"kEE: "<<kEE[nReal]<<endl;
+					cout<<"kMM: "<<kMM[nReal]<<endl;
+				}
+
+				for(int nMC = 0; nMC < nMonteCal; nMC++){
+					if(nMC==9){//DYJets
+						mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
+						mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
+						mc_ee_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
+						mc_mm_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==1")+TCut_base+dycut);
+					}
+					if(nMC==10){//DYJets_10to50
+						front_mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("front_mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
+						front_mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("front_mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
+						front_mc_ee_out[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("front_mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
+						front_mc_mm_out[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
+						tree[nMC]->Project(Form("front_mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==1")+TCut_base+dycut);
+					}
+				}
+
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 				/////////////////////////////////////////////MonteCals////////////////////////////////////////////////////////
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -337,23 +396,6 @@
 						histo_MonteCal[NVar][NStep][nCh][nMC] = new TH1F(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 						tree[nMC]->Project(Form("histo_MonteCal_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base);
 					}
-
-					//histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineWidth(2);
-					/*if(nMC == 0){//tt-signal(visible)
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttsignal_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttsignal_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttsignal_c);
-					  }
-					  if(nMC == 1){//tt-others
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(ttothers_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(ttothers_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(ttothers_c);
-					  }
-					  if(nMC == 2){//w+jets
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetLineColor(wjets_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetFillColor(wjets_c);
-					  histo_MonteCal[NVar][NStep][nCh][nMC]->SetMarkerColor(wjets_c);
-					  }*/
 				}
 
 				//////////////////////////////////////////////RealData/////////////////////////////////////////////////////
@@ -398,25 +440,6 @@
 						histo_Zr[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);
 					}
 				}
-
-				/*histo_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
-				  histo_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-				  histo_SingleTop[NVar][NStep][nCh]->SetMarkerColor(STop_c);
-				  histo_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
-				  histo_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
-				  histo_Diboson[NVar][NStep][nCh]->SetMarkerColor(Diboson_c);
-				  histo_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
-				  histo_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
-				  histo_Zr[NVar][NStep][nCh]->SetMarkerColor(Z_pshy_c);*/
-
-				/*for(int nMC = 0; nMC < nMonteCal; nMC++){
-				  if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_Zr[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-				  if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-				  if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "lp");
-				  if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-				  if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-				  if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "lp");
-				  }*/
 
 				//--------------------------------------------Print-----------------------------------------------
 
@@ -508,12 +531,12 @@
 				cout<<""<<endl;
 				cout<<""<<endl;
 
-				histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
-				histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
-				histo_RealData[NVar][NStep][nCh]->SetFillStyle(3001);
-				histo_RealData[NVar][NStep][nCh]->SetFillColor(14);
-				histo_RealData[NVar][NStep][nCh]->SetMarkerStyle(20);
-				histo_RealData[NVar][NStep][nCh]->SetMarkerSize(1.2);
+				/*histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
+				  histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
+				  histo_RealData[NVar][NStep][nCh]->SetFillStyle(3001);
+				  histo_RealData[NVar][NStep][nCh]->SetFillColor(14);
+				  histo_RealData[NVar][NStep][nCh]->SetMarkerStyle(20);
+				  histo_RealData[NVar][NStep][nCh]->SetMarkerSize(1.2);*/
 
 				l_[NVar][NStep][nCh]->AddEntry(histo_RealData[NVar][NStep][nCh],"Data ", "lp");
 
@@ -608,19 +631,19 @@
 					if(tr == 0){//tt-signal(visible)
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttsignal_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 1){//tt-others
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttothers_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 2){//w+jets
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(wjets_c);
-						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 				}
@@ -678,16 +701,16 @@
 
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillStyle(1001);
+				//histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillStyle(1001);
 				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
 				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
-				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillStyle(1001);
+				//histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillStyle(1001);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
 				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineWidth(2);
-				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillStyle(1001);
+				//histo_nReweight_Zr[NVar][NStep][nCh]->SetFillStyle(1001);
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "f");
@@ -706,35 +729,6 @@
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_nReweight_Data[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
 				}
-
-				/*double Reweight_SingleTop[n];
-				  double Reweight_Diboson[n];
-				  double Reweight_Zr[n];
-				  double Reweight_ttsignal[n];
-				  double Reweight_ttothers[n];
-				  double Reweight_wjets[n];
-				  double Reweight_totMC[n];
-				  double Reweight_DataBin[n];
-
-				  double Reweight_RatioBin[n];*/
-
-				/*for(int i = 0; i < n; i++){
-				  if(i==61){
-				  Reweight_SingleTop[i] = histo_nReweight_SingleTop[NVar][NStep][nCh]->GetBinContent(i);
-				  Reweight_Diboson[i] = histo_nReweight_Diboson[NVar][NStep][nCh]->GetBinContent(i);
-				  Reweight_Zr[i] = histo_nReweight_Zr[NVar][NStep][nCh]->GetBinContent(i);
-				  Reweight_ttsignal[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][0]->GetBinContent(i);
-				  Reweight_ttothers[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][1]->GetBinContent(i);
-				  Reweight_wjets[i] = histo_nReweight_MonteCal[NVar][NStep][nCh][2]->GetBinContent(i);
-				  Reweight_DataBin[i] = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(i);
-
-				  Reweight_tot_MC[i] = Reweight_SingleTop[i]+Reweight_Diboson[i]+Reweight_Zr[i]+Reweight_ttsignal[i]+Reweight_ttothers[i]+Reweight_wjets[i];
-
-				  Reweight_RatioBin[i] = Reweight_DataBin[i]/Reweight_totMC[i];
-
-				  cout<<"ReweightBin: "<<Reweight_RatioBin_ev[i]<<",    ReweightData: "<<Reweight_DataBin_ev[i]<<",    MC: "<<Reweight_MCBin_ev[i]<<endl;
-				  }
-				  }*/
 
 				double ev_Re = 0;
 				ev_Re = histo_nReweight_Data[NVar][NStep][nCh]->GetBinContent(nbin[NVar]+1);
