@@ -157,6 +157,7 @@
 	//---------------------------select choose one------------------------
 	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
 	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
+	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
@@ -213,7 +214,7 @@
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_Cut[nChannel] = {"&&channel==1"};//MuEl
+	TString Channel_Cut[nChannel] = {"&&channel==1"};//
 	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};
 
 	////////////////////////////////Get Samples/////////////////////////////////
@@ -346,11 +347,13 @@
 					tree[nReal+10]->Project(Form("rd_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
 					rd_mm_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),2,0,2);
 					tree[nReal+10]->Project(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
-					kEE[nReal] = sqrt(rd_ee_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_mm_in[NVar][NStep][nCh][nReal]->Integral())/2.;
-					kMM[nReal] = sqrt(rd_mm_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_ee_in[NVar][NStep][nCh][nReal]->Integral())/2.;
-					cout<<""<<endl;
-					cout<<"kEE: "<<kEE[nReal]<<endl;
-					cout<<"kMM: "<<kMM[nReal]<<endl;
+					kEE[nReal] += sqrt(rd_ee_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_mm_in[NVar][NStep][nCh][nReal]->Integral())/2.;
+					kMM[nReal] += sqrt(rd_mm_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_ee_in[NVar][NStep][nCh][nReal]->Integral())/2.;
+					if(nReal==2){
+						cout<<""<<endl;
+						cout<<"kEE: "<<kEE[nReal]<<endl;
+						cout<<"kMM: "<<kMM[nReal]<<endl;
+					}
 				}
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -598,22 +601,22 @@
 						if(lep1_eta) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
 						if(dilep_m) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
 
-						if(nCh==0) if(!(channel==1)) continue;
-						if(nCh==1) if(!(channel==2)) continue;
-						if(nCh==2) if(!(channel==3)) continue;
-						if(nCh==3) if(!(channel==1 || channel==2 || channel==3)) continue;
+						/*if(nCh==0)*/if(channel_1) if(!(channel==1)) continue;
+						/*if(nCh==1)*/if(channel_2) if(!(channel==2)) continue;
+						/*if(nCh==2)*/if(channel_3) if(!(channel==3)) continue;
+						/*if(nCh==3)*/if(channel_0) if(!(channel==1 || channel==2 || channel==3)) continue;
 
 						if(!(tri!=0&&filtered==1&&is3lep==2&& lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
 						//if(!(tri!=0&&filtered==1&&is3lep==2)) continue;
-						if(tr==0&&nCh==0) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
-						if(tr==0&&nCh==1) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
+						if(tr==0&&channel_1) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
+						if(tr==0&&channel_2) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
-						if(tr==0&&nCh==2) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
+						if(tr==0&&channel_3) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
 						//if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
-						if(tr==1&&nCh==0) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
-						if(tr==1&&nCh==1) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
-						if(tr==1&&nCh==2) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
+						if(tr==1&&channel_1) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
+						if(tr==1&&channel_2) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
+						if(tr==1&&channel_3) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
 						//if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 
 						if(step_1) if(!(step>=1)) continue;
