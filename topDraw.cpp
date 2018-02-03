@@ -133,7 +133,6 @@
 	TH1F *mc_ee_out[StepNum][nVariable][nChannel][nMonteCal];
 	TH1F *mc_mm_out[StepNum][nVariable][nChannel][nMonteCal];
 
-
 	//-----------------------------------------------------------------------------
 
 	TCanvas *canv_[StepNum][nVariable][nChannel];
@@ -303,6 +302,12 @@
 	double mm_N_mc_in = 0, mm_N_mc_out = 0;
 	double mm_N_BGSR = 0;
 
+	double ee_Alpha_data = 0;
+	double ee_N_data_in = 0, ee_N_data_out = 0;
+	double ee_Alpha_mc = 0;
+	double ee_N_mc_in = 0, ee_N_mc_out = 0;
+	double ee_N_BGSR = 0;
+
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
 			for(int NStep = 0; NStep < StepNum; NStep++){
@@ -357,18 +362,26 @@
 					tree[nReal+10]->Project(Form("rd_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
 
 					mm_N_data_in += rd_mm_in[NVar][NStep][nCh][nReal]->Integral(1,60+1);
-					cout<<""<<endl;
-					cout<< "mm_N_data_in: " << mm_N_data_in <<endl;
 					mm_N_data_out += rd_mm_out[NVar][NStep][nCh][nReal]->Integral(1,60+1);
-					cout<< "N_data_out: " << mm_N_data_out <<endl;
+					ee_N_data_in += rd_ee_in[NVar][NStep][nCh][nReal]->Integral(1,60+1);
+					ee_N_data_out += rd_ee_out[NVar][NStep][nCh][nReal]->Integral(1,60+1);
 				}
 
+				cout<<""<<endl;
+				cout<< "mm_N_data_in: " << mm_N_data_in <<endl;
+				cout<< "mm_N_data_out: " << mm_N_data_out <<endl;
+				cout<< "" <<endl;
+				cout<< "ee_N_data_in: " << ee_N_data_in <<endl;
+				cout<< "ee_N_data_out: " << ee_N_data_out <<endl;
+
 				mm_Alpha_data = mm_N_data_in/mm_N_data_out;
+				ee_Alpha_data = ee_N_data_in/ee_N_data_out;
 				cout<<""<<endl;
 				cout<<"mm_Data ratio(in/out): "<<mm_Alpha_data<<endl;
+				cout<<"ee_Data ratio(in/out): "<<ee_Alpha_data<<endl;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC>=9){//DYJets
+					if(nMC>=2){//DYJets
 						mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
 						tree[nMC]->Project(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
 						mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
@@ -377,16 +390,29 @@
 						tree[nMC]->Project(Form("mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
 						mc_mm_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
 						tree[nMC]->Project(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
+
+						mm_N_mc_in += mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1);
+						mm_N_mc_out += mc_mm_out[NVar][NStep][nCh][nMC]->Integral(1,60+1);
 						kEE[nMC] += sqrt(mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						kMM[nMC] += sqrt(mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 					}
+					cout<<""<<endl;
+					cout<<"kEE: "<<kEE[nMC]<<endl;
+					cout<<"kMM: "<<kMM[nMC]<<endl;
 				}
+
+				mm_Alpha_mc = mm_N_mc_in/mm_N_mc_out;
+				mm_N_BGSR = mm_Alpha_mc*(mm_N_data_out+1);
+				ee_Alpha_mc = ee_N_mc_in/ee_N_mc_out;
+				ee_N_BGSR = ee_Alpha_mc*(ee_N_data_out+1);
 				cout<<""<<endl;
-				cout<<"kEE: "<<kEE[nReal]<<endl;
-				cout<<"kMM: "<<kMM[nReal]<<endl;
+				cout<<"mm_MC ratio(in/out): "<< mm_Alpha_mc << endl;
+				cout<<"ee_MC ratio(in/out): "<< ee_Alpha_mc << endl;
+				cout<<""<<endl;
+				cout<<"mm_N_BGSR : "<<mm_N_BGSR <<endl;
+				cout<<"ee_N_BGSR : "<<ee_N_BGSR <<endl;
 
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 				/////////////////////////////////////////////MonteCals////////////////////////////////////////////////////////
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
@@ -521,15 +547,6 @@
 				nev_MC = histo_MC[NVar][NStep][nCh]->Integral(1,nbin[NVar]+1);
 				histo_MC[NVar][NStep][nCh]->Scale(1/nev_MC);
 
-				/*hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
-				  for(int nMC = 0; nMC < nMonteCal; nMC++){
-				  if(nMC >= 0 && nMC <= 2)hs[NVar][NStep][nCh]->Add(histo_MonteCal[NVar][NStep][nCh][nMC]);//MC
-				  }
-
-				  hs[NVar][NStep][nCh]->Add(histo_SingleTop[NVar][NStep][nCh]);
-				  hs[NVar][NStep][nCh]->Add(histo_Diboson[NVar][NStep][nCh]);
-				  hs[NVar][NStep][nCh]->Add(histo_Zr[NVar][NStep][nCh]);*/
-
 				double revents = 0;
 				revents += histo_RealData[NVar][NStep][nCh]->GetEntries();
 
@@ -539,13 +556,6 @@
 				cout<<"data : "<<revents<<endl;
 				cout<<""<<endl;
 				cout<<""<<endl;
-
-				/*histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
-				  histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
-				  histo_RealData[NVar][NStep][nCh]->SetFillStyle(3001);
-				  histo_RealData[NVar][NStep][nCh]->SetFillColor(14);
-				  histo_RealData[NVar][NStep][nCh]->SetMarkerStyle(20);
-				  histo_RealData[NVar][NStep][nCh]->SetMarkerSize(1.2);*/
 
 				l_[NVar][NStep][nCh]->AddEntry(histo_RealData[NVar][NStep][nCh],"Data ", "lp");
 
@@ -618,12 +628,10 @@
 						if(tr==0&&channel_2) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
 						if(tr==0&&channel_3) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
-						//if(tr==0&&nCh==3) if(!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)) continue;
 
 						if(tr==1&&channel_1) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
 						if(tr==1&&channel_2) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
 						if(tr==1&&channel_3) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
-						//if(tr==1&&nCh==3) if(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel) continue;
 
 						if(step_1) if(!(step>=1)) continue;
 						if(step_2) if(!(step>=2)) continue;
@@ -640,19 +648,16 @@
 					if(tr == 0){//tt-signal(visible)
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttsignal_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttsignal_c);
-						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 1){//tt-others
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(ttothers_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(ttothers_c);
-						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 					if(tr == 2){//w+jets
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(wjets_c);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(wjets_c);
-						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
 				}
@@ -771,8 +776,8 @@
 				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				histo_nReweight_Data[NVar][NStep][nCh]->Draw();
-
-				hs[NVar][NStep][nCh]->Draw("same");
+				hs[NVar][NStep][nCh]->Draw("histsame");
+				histo_nReweight_Data[NVar][NStep][nCh]->Draw("esame");
 
 				canv_[NVar][NStep][nCh]->Modified();
 
