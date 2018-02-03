@@ -393,6 +393,8 @@
 
 						mm_N_mc_in += mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1);
 						mm_N_mc_out += mc_mm_out[NVar][NStep][nCh][nMC]->Integral(1,60+1);
+						ee_N_mc_in += mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1);
+						ee_N_mc_out += mc_ee_out[NVar][NStep][nCh][nMC]->Integral(1,60+1);
 						kEE[nMC] += sqrt(mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						kMM[nMC] += sqrt(mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						cout<<""<<endl;
