@@ -396,8 +396,8 @@
 						kEE[nMC] += sqrt(mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						kMM[nMC] += sqrt(mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						cout<<""<<endl;
-						cout<<"kEE: "<<kEE[nMC]<<endl;
-						cout<<"kMM: "<<kMM[nMC]<<endl;
+						cout<<"kEE: "<<kEE[nMC]<<"_"<<Legend_Name[nMC] << endl;
+						cout<<"kMM: "<<kMM[nMC]<<"_"<<Legend_Name[nMC] << endl;
 					}
 				}
 
