@@ -395,10 +395,10 @@
 						mm_N_mc_out += mc_mm_out[NVar][NStep][nCh][nMC]->Integral(1,60+1);
 						kEE[nMC] += sqrt(mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
 						kMM[nMC] += sqrt(mc_mm_in[NVar][NStep][nCh][nMC]->Integral(1,60+1)/mc_ee_in[NVar][NStep][nCh][nMC]->Integral(1,60+1));
+						cout<<""<<endl;
+						cout<<"kEE: "<<kEE[nMC]<<endl;
+						cout<<"kMM: "<<kMM[nMC]<<endl;
 					}
-					cout<<""<<endl;
-					cout<<"kEE: "<<kEE[nMC]<<endl;
-					cout<<"kMM: "<<kMM[nMC]<<endl;
 				}
 
 				mm_Alpha_mc = mm_N_mc_in/mm_N_mc_out;
