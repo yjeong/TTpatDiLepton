@@ -3,10 +3,10 @@
 	//gROOT->ProcessLine("#include <vector>");
 	gStyle->SetOptStat(0);//To display the mean and RMS: SetOptStat("mr"), nemruoi, ;
 	gStyle->SetOptDate(0);//display date position
-	/*gStyle->SetCanvasDefH(600);//Height of canvas
-	  gStyle->SetCanvasDefW(600);//Width of canvas
-	  gStyle->SetCanvasDefX(0);//Position on screen
-	  gStyle->SetCanvasDefY(0);*/
+	gStyle->SetCanvasDefH(600);//Height of canvas
+	gStyle->SetCanvasDefW(600);//Width of canvas
+	gStyle->SetCanvasDefX(0);//Position on screen
+	gStyle->SetCanvasDefY(0);
 	gStyle->SetPalette(0);
 
 	gStyle->SetPadLeftMargin(0.12);
@@ -113,28 +113,21 @@
 	//----------------------------PUEventReweighting------------------------------
 
 	TH1F *histo_nReweight_MonteCal[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *histo_nReweight_MonteCal_gen[StepNum][nVariable][nChannel][nMonteCal];
 	TH1F *histo_nReweight_SingleTop[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Diboson[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Zr[StepNum][nVariable][nChannel];
-	TH1F *histo_nReweight_MC[StepNum][nVariable][nChannel];
 
+	//----------------------------RatioPlot-------------------------
+	TH1F *histo_nReweight_MC[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Data[StepNum][nVariable][nChannel];
 
 	//-----------------------------DYEstimation------------------------------------
 
-	TH1F *rd_ee_in[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *rd_mm_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *rd_em_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *rd_em_out[StepNum][nVariable][nChannel][nMonteCal];
 
-	TH1F *mc_ee_in[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *mc_mm_in[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *mc_ee_out[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *mc_mm_out[StepNum][nVariable][nChannel][nMonteCal];
-
-	TH1F *front_mc_ee_in[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *front_mc_mm_in[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *front_mc_ee_out[StepNum][nVariable][nChannel][nMonteCal];
-	TH1F *front_mc_mm_out[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *mc_em_in[StepNum][nVariable][nChannel][nMonteCal];
+	TH1F *mc_em_out[StepNum][nVariable][nChannel][nMonteCal];
 
 	//-----------------------------------------------------------------------------
 
@@ -185,10 +178,8 @@
 	TLorentzVector* lep1 = NULL;
 	TLorentzVector* lep2 = NULL;
 
-	TString dycut;
 	TString dyvar;
-	dycut = "*(step1==1)";
-	dyvar = "tri";
+	dyvar = "dilep.M()";
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
 	TString Step_Cut[StepNum] = {"step>=1"};
@@ -296,9 +287,11 @@
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
 
-	double kMM[nRealData] = {0,};
-	double kEE[nRealData] = {0,};
-
+	double Alpha_data = 0;
+	double N_data_in = 0, N_data_out = 0;
+	double Alpha_mc = 0;
+	double N_mc_in = 0, N_mc_out = 0;
+	double N_BGSR = 0;
 	for(int nCh = 0; nCh < nChannel; nCh++){
 		for(int NVar = 0; NVar < nVariable; NVar++){
 			for(int NStep = 0; NStep < StepNum; NStep++){
@@ -343,42 +336,36 @@
 				////////////////////////////////////////////DYEstimation///////////////////////////////////////
 
 				for(int nReal = 0; nReal < nRealData; nReal++){
-					rd_ee_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),2,0,2);
-					tree[nReal+10]->Project(Form("rd_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
-					rd_mm_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),2,0,2);
-					tree[nReal+10]->Project(Form("rd_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
-					kEE[nReal] += sqrt(rd_ee_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_mm_in[NVar][NStep][nCh][nReal]->Integral())/2.;
-					kMM[nReal] += sqrt(rd_mm_in[NVar][NStep][nCh][nReal]->Integral(1,2+1)/rd_ee_in[NVar][NStep][nCh][nReal]->Integral())/2.;
-					if(nReal==2){
-						cout<<""<<endl;
-						cout<<"kEE: "<<kEE[nReal]<<endl;
-						cout<<"kMM: "<<kMM[nReal]<<endl;
-					}
+					rd_em_in[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_em_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),60,20,320);
+					tree[nReal+10]->Project(Form("rd_em_in_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==2 && step2 == 0")+TCut_base);
+					rd_em_out[NVar][NStep][nCh][nReal] = new TH1F(Form("rd_em_out_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),60,20,320);
+					tree[nReal+10]->Project(Form("rd_em_out_%d_%d_%d_%d",NVar,NStep,nCh,nReal),dyvar,Form("channel==2 && step2 ==1")+TCut_base);
+					N_data_in += rd_em_in[NVar][NStep][nCh][nReal]->Integral(1,60+1);
+					cout<<""<<endl;
+					cout<< "N_data_in: " << N_data_in <<endl;
+					N_data_out += rd_em_out[NVar][NStep][nCh][nReal]->Integral(1,60+1);
+					cout<< "N_data_out: " << N_data_out <<endl;
 				}
+				Alpha_data = N_data_in/N_data_out;
+				cout<<""<<endl;
+				cout<<"Data ratio(in/out): "<<Alpha_data<<endl;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC==9){//DYJets
-						mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
-						mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
-						mc_ee_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
-						mc_mm_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==1")+TCut_base+dycut);
-					}
-					if(nMC==10){//DYJets_10to50
-						front_mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("front_mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==0")+TCut_base+dycut);
-						front_mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("front_mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==0")+TCut_base+dycut);
-						front_mc_ee_out[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("front_mc_ee_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
-						front_mc_mm_out[NVar][NStep][nCh][nMC] = new TH1F(Form("front_mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),2,0,2);
-						tree[nMC]->Project(Form("front_mc_mm_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==3 && step2 ==1")+TCut_base+dycut);
+					if(nMC>=2){//MC
+						mc_em_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_em_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
+						tree[nMC]->Project(Form("mc_em_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2&& step2 ==0")+TCut_base);
+						mc_em_out[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_em_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
+						tree[nMC]->Project(Form("mc_em_out_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base);
+						N_mc_in += mc_em_in[NVar][NStep][nCh][nMC]->Integral(1,60+1);
+						N_mc_out += mc_em_out[NVar][NStep][nCh][nMC]->Integral(1,60+1);
 					}
 				}
-
+				Alpha_mc = N_mc_in/N_mc_out;
+				N_BGSR = Alpha_mc*(N_data_out+1);
+				cout<<""<<endl;
+				cout<<"MC ratio(in/out): "<< Alpha_mc << endl;
+				cout<<""<<endl;
+				cout<<"N_BGSR : "<<N_BGSR <<endl;
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -458,8 +445,8 @@
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
 					if(nMC<=2){
 						MonteCal_ev = histo_MonteCal[NVar][NStep][nCh][nMC]->GetBinContent(nbin[NVar]+1);
-						//Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
-						Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->GetEntries();
+						Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->Integral(1,nbin[NVar]+1);
+						//Int_MonteCal[nMC] = histo_MonteCal[NVar][NStep][nCh][nMC]->GetEntries();
 						cout<<Legend_Name[nMC]<<" yield : "<<Int_MonteCal[nMC]<<", err : "<<sqrt(MonteCal_ev)<<endl;
 						total_1 += Int_MonteCal[nMC];
 					}
@@ -482,7 +469,7 @@
 
 				total_2 = Int_SingleTop+Int_Diboson+Int_Zgamma;
 				total = total_1+total_2;
-				bkg = total-Int_MonteCal[0];
+				bkg = total-Int_MonteCal[0]-Int_MonteCal[1];
 
 				cout<<""<<endl;
 				cout<<"bkg : "<<bkg<<endl;
@@ -649,6 +636,24 @@
 						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
 					}
+					if(tr >= 3 && tr <= 4){//SingleTop
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(STop_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(STop_c);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
+					}
+					if(tr >= 5 && tr <= 7){//Diboson
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(Diboson_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(Diboson_c);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
+					}
+					if(tr >= 8 && tr <= 9){//Z-gamma
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineColor(Z_pshy_c);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillColor(Z_pshy_c);
+						//histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetFillStyle(1001);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetLineWidth(2);
+					}
 				}
 
 				double Reweight_MonteCal_ev = 0;
@@ -702,23 +707,10 @@
 					}
 				}
 
-				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineColor(STop_c);
-				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillColor(STop_c);
-				//histo_nReweight_SingleTop[NVar][NStep][nCh]->SetFillStyle(1001);
-				histo_nReweight_SingleTop[NVar][NStep][nCh]->SetLineWidth(2);
-				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineColor(Diboson_c);
-				histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillColor(Diboson_c);
-				histo_nReweight_Diboson[NVar][NStep][nCh]->SetLineWidth(2);
-				//histo_nReweight_Diboson[NVar][NStep][nCh]->SetFillStyle(1001);
-				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineColor(Z_pshy_c);
-				histo_nReweight_Zr[NVar][NStep][nCh]->SetFillColor(Z_pshy_c);
-				histo_nReweight_Zr[NVar][NStep][nCh]->SetLineWidth(2);
-				//histo_nReweight_Zr[NVar][NStep][nCh]->SetFillStyle(1001);
-
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Zr[NVar][NStep][nCh],Legend_Name[nMC], "f");
-					if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Diboson[NVar][NStep][nCh],Legend_Name[nMC], "f");
-					if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_SingleTop[NVar][NStep][nCh],Legend_Name[nMC], "f");
+					if(nMC==8)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
+					if(nMC==6)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
+					if(nMC==4)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
 					if(nMC==2)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
 					if(nMC==1)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
 					if(nMC==0)l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC],Legend_Name[nMC], "f");
@@ -750,23 +742,18 @@
 
 				hs[NVar][NStep][nCh] = new THStack(Form("hs_%d_%d_%d",NVar,NStep,nCh),Form(""));
 
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][0]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][1]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][2]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_SingleTop[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Diboson[NVar][NStep][nCh]);
-				hs[NVar][NStep][nCh]->Add(histo_nReweight_Zr[NVar][NStep][nCh]);
+				for(int nMC = 0; nMC < nMonteCal; nMC++) hs[NVar][NStep][nCh]->Add(histo_nReweight_MonteCal[NVar][NStep][nCh][nMC]);
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
 				if(lep1_pt || lep1_eta || dilep_m)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
 				if(nVertex)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				histo_nReweight_Data[NVar][NStep][nCh]->Draw();
 
-				hs[NVar][NStep][nCh]->Draw("same");
+				hs[NVar][NStep][nCh]->Draw("histsame");
+				histo_nReweight_Data[NVar][NStep][nCh]->Draw("esame");
 
 				canv_[NVar][NStep][nCh]->Modified();
 
