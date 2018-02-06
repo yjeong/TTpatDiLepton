@@ -559,13 +559,6 @@
 				cout<<""<<endl;
 				cout<<""<<endl;
 
-				histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
-				histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
-				histo_RealData[NVar][NStep][nCh]->SetMarkerStyle(20);
-				histo_RealData[NVar][NStep][nCh]->SetMarkerSize(1.2);
-
-				l_[NVar][NStep][nCh]->AddEntry(histo_RealData[NVar][NStep][nCh],"Data ", "lp");
-
 				/*double ymax = 0;
 				  ymax = hs[NVar][NStep][nCh]->GetMaximum();
 				  hs[NVar][NStep][nCh]->SetMaximum(ymax*100);
@@ -762,6 +755,7 @@
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerStyle(20);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMarkerSize(1.2);
 
+				l_[NVar][NStep][nCh]->AddEntry(histo_nReweight_Data[NVar][NStep][nCh],"Data ", "lp");
 				//--------------------------------------------------------
 
 				plotpad_[NVar][NStep][nCh]->cd();
