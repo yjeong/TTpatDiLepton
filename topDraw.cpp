@@ -381,7 +381,7 @@
 				cout<<"ee_Data ratio(in/out): "<<ee_Alpha_data<<endl;
 
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
-					if(nMC>=2){//DYJets
+					if(nMC>=2){//Background
 						mc_ee_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
 						tree[nMC]->Project(Form("mc_ee_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),dyvar,Form("channel==2 && step2 ==1")+TCut_base+dycut);
 						mc_mm_in[NVar][NStep][nCh][nMC] = new TH1F(Form("mc_mm_in_%d_%d_%d_%d",NVar,NStep,nCh,nMC),Form(""),60,20,320);
@@ -558,6 +558,11 @@
 				cout<<"data : "<<revents<<endl;
 				cout<<""<<endl;
 				cout<<""<<endl;
+
+				histo_RealData[NVar][NStep][nCh]->SetLineColor(1);
+				histo_RealData[NVar][NStep][nCh]->SetLineWidth(1);
+				histo_RealData[NVar][NStep][nCh]->SetMarkerStyle(20);
+				histo_RealData[NVar][NStep][nCh]->SetMarkerSize(1.2);
 
 				l_[NVar][NStep][nCh]->AddEntry(histo_RealData[NVar][NStep][nCh],"Data ", "lp");
 
