@@ -641,8 +641,8 @@
 						if(step_4) if(!(step>=4)) continue;
 						if(step_5) if(!(step>=5)) continue;
 
-						PUeventReweight = puweight*tri;
-						//PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
+						//PUeventReweight = puweight*tri;
+						PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
