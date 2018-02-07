@@ -152,21 +152,21 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select choose one------------------------
-	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
+	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;//switch 0->1
 	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
-	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;
+	int channel_1 = 0, channel_2 = 0, channel_3 = 1, channel_0 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
-	TString Variable[nVariable] = {"nvertex"};//==================================variable
+	//TString Variable[nVariable] = {"nvertex"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
-	//TString Variable[nVariable] = {"dilep.M()"};//==================================variable
+	TString Variable[nVariable] = {"dilep.M()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
 	  int Var_int_size = sizeof(Var_int)/sizeof(Var_int[0]);
-	  int Var_float_size = sizeof(Var_float)/sizeof(Var_float[0]);
+	  int Var_float_size = sizeof(Var_float)/:sizeof(Var_float[0]);
 	  int var_int[100][100];
 	  float var_float[100][100];*/
 
@@ -200,19 +200,21 @@
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
-	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
+	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	  TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
-	/*TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
-	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
+	TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
+	TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_Cut[nChannel] = {"&&channel==1"};//
-	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};
+	TString Channel_Cut[nChannel] = {"&&channel==3"};
+	/*TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
+	/*TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
+	TString Channel_txt[nChannel] = {"#mu^{#pm}#mu^{#mp}"};//-*///channel_3
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
@@ -271,10 +273,10 @@
 	//float xmax[nVariable] = {70,320,10,6,1200};//====================================variable
 	//float ymin[nVariable] = {300,300,100,100,1100};//====================================variable*/
 
-	int nbin[nVariable] = {50};//===================================variable
-	float xmin[nVariable] = {0};//====================================variable
-	float xmax[nVariable] = {50};//====================================variable
-	float ymin[nVariable] = {10};//====================================variable*/
+	/*int nbin[nVariable] = {50};//===================================variable
+	  float xmin[nVariable] = {0};//====================================variable
+	  float xmax[nVariable] = {50};//====================================variable
+	  float ymin[nVariable] = {10};//====================================variable*/
 
 	/*int nbin[nVariable] = {9};//===================================variable
 	  int xmin[nVariable] = {20};//====================================variable
@@ -286,10 +288,10 @@
 	  float xmax[nVariable] = {2.5};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
 
-	/*int nbin[nVariable] = {60};//===================================variable
-	  float xmin[nVariable] = {20};//====================================variable
-	  float xmax[nVariable] = {320};//====================================variable
-	  float ymin[nVariable] = {100};//====================================variable*/
+	int nbin[nVariable] = {60};//===================================variable
+	float xmin[nVariable] = {20};//====================================variable
+	float xmax[nVariable] = {320};//====================================variable
+	float ymin[nVariable] = {100};//====================================variable*/
 
 	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
 
