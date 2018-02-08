@@ -98,8 +98,12 @@
 
 	TH1F *histo_MonteCal[StepNum][nVariable][nChannel][nMonteCal];
 	TH1F *histo_nRealData[StepNum][nVariable][nChannel][nRealData];
+	TH1F *histo_nRealData_final[StepNum][nVariable][nChannel][nRealData];
+	TH1F *histo_nRealData_gen[StepNum][nVariable][nChannel][nRealData];
 
 	TH1F *histo_RealData[StepNum][nVariable][nChannel];
+	TH1F *histo_RealData_final[StepNum][nVariable][nChannel];
+	TH1F *histo_RealData_gen[StepNum][nVariable][nChannel];
 
 	TH1F *histo_SingleTop[StepNum][nVariable][nChannel];
 	TH1F *histo_Diboson[StepNum][nVariable][nChannel];
@@ -442,6 +446,11 @@
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_nRealData[NVar][NStep][nCh][nReal] = new TH1F(Form("histo_nRealData_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					tree[nReal+10]->Project(Form("histo_nRealData_%d_%d_%d_%d",NVar,NStep,nCh,nReal),Variable[NVar],Step_Cut[NStep]+Channel_Cut[nCh]+TCut_base);
+
+					histo_nRealData_final[NVar][NStep][nCh][nReal] = new TH1F(Form("histo_nRealData_final%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+					tree[nReal+10]->Project(Form("histo_nRealData_final%d_%d_%d_%d",NVar,NStep,nCh,nReal),Variable[NVar],Form("step>=5")+Channel_Cut[nCh]);
+					histo_nRealData_gen[NVar][NStep][nCh][nReal] = new TH1F(Form("histo_nRealData_gen%d_%d_%d_%d",NVar,NStep,nCh,nReal),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+					tree[nReal+10]->Project(Form("histo_nRealData_gen%d_%d_%d_%d",NVar,NStep,nCh,nReal),Variable[NVar],Form("step")+Channel_Cut[nCh]);
 				}
 				///////////////////////////////////////////// x-section candidate ///////////////////////////////////////////
 
@@ -526,15 +535,28 @@
 				cout<<""<<endl;
 
 				////////////////////////////////////////////////// RealData ///////////////////////////////////////////////////
+				double Data_final = 0;
+				double Data_gen = 0;
 
 				histo_RealData[NVar][NStep][nCh] = new TH1F(Form("histo_RealData_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				histo_RealData[NVar][NStep][nCh]->SetLineColor(data_c);
+				histo_RealData_final[NVar][NStep][nCh] = new TH1F(Form("histo_RealData_final%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
+				histo_RealData_gen[NVar][NStep][nCh] = new TH1F(Form("histo_RealData_gen%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 
 				//histo_RealData[NVar][NStep][nCh]->SetLineStyle(2);
 
 				for(int nReal = 0; nReal < nRealData; nReal++){
 					histo_RealData[NVar][NStep][nCh]->Add(histo_nRealData[NVar][NStep][nCh][nReal]);
+					histo_RealData_final[NVar][NStep][nCh]->Add(histo_nRealData_final[NVar][NStep][nCh][nReal]);
+					histo_RealData_gen[NVar][NStep][nCh]->Add(histo_nRealData_gen[NVar][NStep][nCh][nReal]);
 				}
+
+				///////////////////////////////////////Branching Ratio/////////////////////////////
+				Data_final = histo_RealData_final[NVar][NStep][nCh]->GetEntries();
+				Data_gen = histo_RealData_gen[NVar][NStep][nCh]->GetEntries();
+				cout<<""<<endl;
+				cout<<"(Xsec)Cut Efficiency: "<<Data_final/Data_gen<<endl;
+				cout<<""<<endl;
 
 				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 				for(int nMC = 0; nMC < nMonteCal; nMC++){
