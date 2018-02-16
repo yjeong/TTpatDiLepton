@@ -23,7 +23,7 @@
 	gStyle->SetTitleSize(0.06, "X");
 	gStyle->SetTitleSize(0.06, "Y");
 	gStyle->SetTitleXOffset(1.2);
-	gStyle->SetTitleYOffset(1.15);
+	gStyle->SetTitleYOffset(0.9);
 
 	gStyle->SetAxisColor(1, "XYZ");
 	gStyle->SetTickLength(0.03, "XYZ");
@@ -82,6 +82,8 @@
 
 	c1 = new TCanvas;
 	//c1->SetLogy();
+	c1->RedrawAxis();
+
 	l_ = new TLegend(lx1,ly1,lx2,ly2);
 	l_->SetFillColor(0);
 	l_->SetLineColor(0);
@@ -150,18 +152,16 @@
 	hist_Diboson->SetFillColor(7);
 	hist_DY->SetLineColor(4);
 	hist_DY->SetFillColor(4);
-	hist_data->SetLineColor(4);
-	hist_data->SetFillColor(4);
 
 	hist_data->SetBinError(n,sqrt(er_data));
 	hist_data->SetMarkerSize(1.1);
 	hist_data->SetMarkerStyle(20);
 
-	hist_sig->GetXaxis()->SetBinLabel(1,"step1");
-	hist_sig->GetXaxis()->SetBinLabel(2,"step2");
-	hist_sig->GetXaxis()->SetBinLabel(3,"step3");
-	hist_sig->GetXaxis()->SetBinLabel(4,"step4");
-	hist_sig->GetXaxis()->SetBinLabel(5,"step5");
+	hist_data->GetXaxis()->SetBinLabel(1,"step1");
+	hist_data->GetXaxis()->SetBinLabel(2,"step2");
+	hist_data->GetXaxis()->SetBinLabel(3,"step3");
+	hist_data->GetXaxis()->SetBinLabel(4,"step4");
+	hist_data->GetXaxis()->SetBinLabel(5,"step5");
 	//hist->Scale(100/1);
 	//hist->SetMinimum(0);
 
@@ -171,7 +171,7 @@
 	l_->AddEntry(hist_STop,"Stop","f");
 	l_->AddEntry(hist_Diboson,"Diboson","f");
 	l_->AddEntry(hist_DY,"DY","f");
-	l_->AddEntry(hist_data,"data","f");
+	l_->AddEntry(hist_data,"data","lp");
 
 	hs = new THStack();
 
@@ -181,13 +181,20 @@
 	hs->Add(hist_STop);
 	hs->Add(hist_Diboson);
 	hs->Add(hist_DY);
-	hs->Draw("hist");
-	hist_data->Draw("same");
+
+	double ymax = 0;
+	ymax = hist_data->GetMaximum();
+	hist_data->SetMaximum(ymax*1.3);
+	hist_data->GetYaxis()->SetTitle("Number of Events");
+
+	hist_data->Draw();
+	hs->Draw("histsame");
+	hist_data->Draw("esame");
 
 	lt1.DrawLatex(xx_1,yy_1,"e^{#pm}#mu^{#mp}");
 	lt2.DrawLatex(x_1,y_1,"CMS");
 	lt3.DrawLatex(x_2,y_2,"Preliminary");
 	lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 	l_->Draw();
-	c1->SaveAs("/afs/cern.ch/work/y/yjeong/catMacro/plots/StepByEvents.png");
+	c1->SaveAs("/afs/cern.ch/work/y/yjeong/catMacro/plots/EventByStep.png");
 }
