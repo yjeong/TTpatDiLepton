@@ -22,7 +22,7 @@
 	gStyle->SetTitleFont(42, "XY");
 	gStyle->SetTitleSize(0.06, "X");
 	gStyle->SetTitleSize(0.06, "Y");
-	gStyle->SetTitleXOffset(1.2);
+	gStyle->SetTitleXOffset(0.9);
 	gStyle->SetTitleYOffset(0.9);
 
 	gStyle->SetAxisColor(1, "XYZ");
@@ -95,37 +95,25 @@
 
 	const int n = 6;
 	float x[n] = {1,2,3,4,5,6};
-	/*float ev_sig[n] = {215279,215279,157703,157703,125524,800};
-	  float ev_others[n] = {35959,35959,26336,26336,20459,700};
-	  float ev_wjet[n] = {11421,11421,1130,1130,0,700};
-	  float ev_STop[n] = {24588,24588,9575,9575,6711,300};
-	  float ev_Diboson[n] = {28938,28938,2186,2186,200,30};
-	  float ev_DY[n] = {80722,80722,5950,5950,623,90};
-	  float ev_data[n] = {366556,366556,186131,186131,139439,90};*/
 
-	float ev_sig[n] = {215279,215279,157703,157703,125524,800};
-	float ev_others[n] = {35959,35959,26336,26336,20459,700};
-	float ev_wjet[n] = {11421,11421,1130,1130,0,700};
-	float ev_STop[n] = {24588,24588,9575,9575,6711,300};
-	float ev_Diboson[n] = {28938,28938,2186,2186,200,30};
-	float ev_DY[n] = {80722,80722,5950,5950,623,90};
-	float ev_data[n] = {366556,366556,186131,186131,139439,90};
+	float ev_sig[n] = {221758+36466,221758+36466,157706+26337,160616+27243,125519+20458};
+	float ev_wjet[n] = {11692,11692,1130,1154,0};
+	float ev_STop[n] = {25389,25389,9574,10006,6711};
+	float ev_Diboson[n] = {29945,29945,2186,2327,200};
+	float ev_DY[n] = {80763,80763,5949,6100,623};
+	float ev_data[n] = {374170,374170,189973,190833,139426};
 
 	TH1F *hist_sig = new TH1F("hist_sig","", n-1, x);
-	TH1F *hist_others = new TH1F("hist_others","",n-1, x);
 	TH1F *hist_wjet = new TH1F("hist_wjet","",n-1, x);
 	TH1F *hist_STop = new TH1F("hist_STop","",n-1, x);
 	TH1F *hist_Diboson = new TH1F("hist_Diboson","",n-1, x);
 	TH1F *hist_DY = new TH1F("hist_DY","",n-1, x);
 	TH1F *hist_data = new TH1F("hist_data","",n-1, x);
 
-	//double er_data[n] = {0,};
 	double er_data = 0;
 	for(int i = 0; i < n; i++){
 		hist_sig->SetBinContent(i+1, x[i]);
 		hist_sig->SetBinContent(i+1, ev_sig[i]);
-		hist_others->SetBinContent(i+1, x[i]);
-		hist_others->SetBinContent(i+1, ev_others[i]);
 		hist_wjet->SetBinContent(i+1, x[i]);
 		hist_wjet->SetBinContent(i+1, ev_wjet[i]);
 		hist_STop->SetBinContent(i+1, x[i]);
@@ -150,8 +138,8 @@
 
 	hist_sig->SetLineColor(2);
 	hist_sig->SetFillColor(2);
-	hist_others->SetLineColor(906);
-	hist_others->SetFillColor(906);
+	//hist_others->SetLineColor(906);
+	//hist_others->SetFillColor(906);
 	hist_wjet->SetLineColor(3);
 	hist_wjet->SetFillColor(3);
 	hist_STop->SetLineColor(42);
@@ -165,36 +153,37 @@
 	hist_data->SetMarkerSize(1.1);
 	hist_data->SetMarkerStyle(20);
 
-	hist_data->GetXaxis()->SetBinLabel(1,"step1");
-	hist_data->GetXaxis()->SetBinLabel(2,"step2");
-	hist_data->GetXaxis()->SetBinLabel(3,"step3");
-	hist_data->GetXaxis()->SetBinLabel(4,"step4");
-	hist_data->GetXaxis()->SetBinLabel(5,"step5");
+	hist_data->GetXaxis()->SetBinLabel(1,"Dilepton");
+	hist_data->GetXaxis()->SetBinLabel(2,"Z veto");
+	hist_data->GetXaxis()->SetBinLabel(3,">1 jets");
+	hist_data->GetXaxis()->SetBinLabel(4,"MET");
+	hist_data->GetXaxis()->SetBinLabel(5,">0 b jets");
 	//hist->Scale(100/1);
 	//hist->SetMinimum(0);
 
-	l_->AddEntry(hist_DY,"Drell-Yan","f");
+	l_->AddEntry(hist_sig,"t#bar{t}","f");
+	//l_->AddEntry(hist_others,"tt_others","f");
+	l_->AddEntry(hist_wjet,"W+jet","f");
+	l_->AddEntry(hist_STop,"Single Top","f");
 	l_->AddEntry(hist_Diboson,"Diboson","f");
-	l_->AddEntry(hist_STop,"SingleTop","f");
-	l_->AddEntry(hist_wjet,"Wjet","f");
-	l_->AddEntry(hist_others,"others","f");
-	l_->AddEntry(hist_sig,"tt_signal","f");
+	l_->AddEntry(hist_DY,"Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}","f");
 	l_->AddEntry(hist_data,"data","lp");
 
 	hs = new THStack();
 
-	hs->Add(hist_sig);
-	hs->Add(hist_others);
 	hs->Add(hist_DY);
-	hs->Add(hist_wjet);
-	hs->Add(hist_STop);
 	hs->Add(hist_Diboson);
+	hs->Add(hist_STop);
+	hs->Add(hist_wjet);
+	//hs->Add(hist_others);
+	hs->Add(hist_sig);
 
 	double ymax = 0;
 	ymax = hist_data->GetMaximum();
 	hist_data->SetMaximum(ymax*1.3);
+	hist_data->SetMinimum(0);
 	hist_data->GetYaxis()->SetTitle("Number of Events");
-	hist_data->GetXaxis()->SetTitle("Number of Steps");
+	//hist_data->GetXaxis()->SetTitle("Number of Steps");
 
 	hist_data->Draw();
 	hs->Draw("histsame");
