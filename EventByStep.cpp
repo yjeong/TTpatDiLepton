@@ -95,6 +95,14 @@
 
 	const int n = 6;
 	float x[n] = {1,2,3,4,5,6};
+	/*float ev_sig[n] = {215279,215279,157703,157703,125524,800};
+	  float ev_others[n] = {35959,35959,26336,26336,20459,700};
+	  float ev_wjet[n] = {11421,11421,1130,1130,0,700};
+	  float ev_STop[n] = {24588,24588,9575,9575,6711,300};
+	  float ev_Diboson[n] = {28938,28938,2186,2186,200,30};
+	  float ev_DY[n] = {80722,80722,5950,5950,623,90};
+	  float ev_data[n] = {366556,366556,186131,186131,139439,90};*/
+
 	float ev_sig[n] = {215279,215279,157703,157703,125524,800};
 	float ev_others[n] = {35959,35959,26336,26336,20459,700};
 	float ev_wjet[n] = {11421,11421,1130,1130,0,700};
@@ -165,27 +173,28 @@
 	//hist->Scale(100/1);
 	//hist->SetMinimum(0);
 
-	l_->AddEntry(hist_sig,"sig","f");
-	l_->AddEntry(hist_others,"others","f");
-	l_->AddEntry(hist_wjet,"wjet","f");
-	l_->AddEntry(hist_STop,"Stop","f");
+	l_->AddEntry(hist_DY,"Drell-Yan","f");
 	l_->AddEntry(hist_Diboson,"Diboson","f");
-	l_->AddEntry(hist_DY,"DY","f");
+	l_->AddEntry(hist_STop,"SingleTop","f");
+	l_->AddEntry(hist_wjet,"Wjet","f");
+	l_->AddEntry(hist_others,"others","f");
+	l_->AddEntry(hist_sig,"tt_signal","f");
 	l_->AddEntry(hist_data,"data","lp");
 
 	hs = new THStack();
 
 	hs->Add(hist_sig);
 	hs->Add(hist_others);
+	hs->Add(hist_DY);
 	hs->Add(hist_wjet);
 	hs->Add(hist_STop);
 	hs->Add(hist_Diboson);
-	hs->Add(hist_DY);
 
 	double ymax = 0;
 	ymax = hist_data->GetMaximum();
 	hist_data->SetMaximum(ymax*1.3);
 	hist_data->GetYaxis()->SetTitle("Number of Events");
+	hist_data->GetXaxis()->SetTitle("Number of Steps");
 
 	hist_data->Draw();
 	hs->Draw("histsame");
