@@ -178,7 +178,7 @@
 	double single_cut_var[nVariable][nMonteCal]={0,};
 	int step, is3lep;
 	bool filtered;
-	int nvertex, njet, nbjet, event;
+	int nvertex, njet, nbjet, events;
 	float met, tri, genweight, puweight, mueffweight, eleffweight, btagweight, topPtWeight, weight;
 
 	int partonChannel, partonMode1, partonMode2, channel, lep1_pid;
@@ -248,10 +248,10 @@
 		if(i>10)cout<<Sample_name[i]<<": "<<++totevents[i]<<endl;
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
 		//for(int l1 = 0; l1 < Var_float_size; l1++) tree[i]->SetBranchAddress(Var_float[l1],var_float[l1]);
-		tree[i]->SetBranchAddress("dilep",&dilep);
+		tree[i]->SetBranchAddress("dilep",&dilep);//TreeName,&int or &float
 		tree[i]->SetBranchAddress("lep1",&lep1);
 		tree[i]->SetBranchAddress("lep2",&lep2);
-		tree[i]->SetBranchAddress("event",&event);
+		tree[i]->SetBranchAddress("event",&events);
 		tree[i]->SetBranchAddress("nvertex",&nvertex);
 		tree[i]->SetBranchAddress("njet",&njet);
 		tree[i]->SetBranchAddress("met",&met);
@@ -670,7 +670,6 @@
 
 						if(channel_1) PUeventReweight = puweight*tri;
 						if(channel_2 || channel_3) PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
-
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 					}
 
