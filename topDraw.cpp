@@ -235,7 +235,7 @@
 		tfile[i] = new TFile(PATH_samples+Sample_name[i]+".root");
 	}
 
-	double totalSig_ev = 0;
+	double tt_powheg_ev = 0;
 	TTree *tree[Sample_Num];
 	TH1D *hnevents[Sample_Num];
 	double totevents[Sample_Num];
@@ -243,7 +243,7 @@
 		tree[i] = (TTree*)tfile[i]->Get("cattree/nom");
 		hnevents[i] = (TH1D*)tfile[i]->Get("cattree/nevents");
 		totevents[i] = hnevents[i]->Integral();
-		totalSig_ev = totevents[0];
+		tt_powheg_ev = totevents[0];
 		if(i!=1&&i<=10)cout<<Sample_name[i]<<": "<<totevents[i]<<endl;//except tt-others
 		if(i>10)cout<<Sample_name[i]<<": "<<++totevents[i]<<endl;
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
@@ -560,7 +560,7 @@
 				cout<<"Data_gen: "<<Data_gen<<endl;
 				cout<<"MC_final: "<<MC_final<<endl;
 				cout<<""<<endl;
-				cout<<"(Xsec)Cut Efficiency: "<<Data_final/totalSig_ev<<endl;//76755950->nevt
+				cout<<"(Xsec)Cut Efficiency: "<<Data_final/tt_powheg_ev<<endl;//76755950->nevt
 				cout<<""<<endl;
 
 				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
