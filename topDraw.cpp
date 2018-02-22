@@ -157,15 +157,15 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select one------------------------
-	int nVertex = 0, lep1_pt = 0, lep1_eta = 1, dilep_m = 0;//switch 0->1
-	int step_1 = 0, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 1;
+	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
+	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
 	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
-	//TString Variable[nVariable] = {"nvertex"};//==================================variable
+	TString Variable[nVariable] = {"nvertex"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
-	TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
+	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
 	//TString Variable[nVariable] = {"dilep.M()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
@@ -193,11 +193,11 @@
 	dyvar = "dilep.M()";
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=5"};
+	TString Step_Cut[StepNum] = {"step>=1"};
 
 	TString TCut_base;
 	TString weight_cut;
-	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
+	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
 	//TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
 
 	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
@@ -205,11 +205,11 @@
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
-	/*TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
-	TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
+	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
 	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
@@ -235,6 +235,7 @@
 		tfile[i] = new TFile(PATH_samples+Sample_name[i]+".root");
 	}
 
+	double totalSig_ev = 0;
 	TTree *tree[Sample_Num];
 	TH1D *hnevents[Sample_Num];
 	double totevents[Sample_Num];
@@ -242,6 +243,7 @@
 		tree[i] = (TTree*)tfile[i]->Get("cattree/nom");
 		hnevents[i] = (TH1D*)tfile[i]->Get("cattree/nevents");
 		totevents[i] = hnevents[i]->Integral();
+		totalSig_ev = totevents[0];
 		if(i!=1&&i<=10)cout<<Sample_name[i]<<": "<<totevents[i]<<endl;//except tt-others
 		if(i>10)cout<<Sample_name[i]<<": "<<++totevents[i]<<endl;
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
@@ -274,7 +276,7 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	/*int nbin[nVariable] = {50};//===================================variable
+	int nbin[nVariable] = {50};//===================================variable
 	float xmin[nVariable] = {0};//====================================variable
 	float xmax[nVariable] = {50};//====================================variable
 	float ymin[nVariable] = {10};//====================================variable*/
@@ -284,7 +286,7 @@
 	  int xmax[nVariable] = {200};//====================================variable
 	  int ymin[nVariable] = {100};//====================================variable*/
 
-	int nbin[nVariable] = {10};//===================================variable
+	/*int nbin[nVariable] = {10};//===================================variable
 	  float xmin[nVariable] = {-2.5};//====================================variable
 	  float xmax[nVariable] = {2.5};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
@@ -558,7 +560,7 @@
 				cout<<"Data_gen: "<<Data_gen<<endl;
 				cout<<"MC_final: "<<MC_final<<endl;
 				cout<<""<<endl;
-				cout<<"(Xsec)Cut Efficiency: "<<Data_final/76755950<<endl;//76755950->nevt
+				cout<<"(Xsec)Cut Efficiency: "<<Data_final/totalSig_ev<<endl;//76755950->nevt
 				cout<<""<<endl;
 
 				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
@@ -833,7 +835,7 @@
 				histo_Ratio[NVar][NStep][nCh]->SetMarkerSize(1.2);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
 				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitle("Data / MC");
-				//histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.12);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.09);
 				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
