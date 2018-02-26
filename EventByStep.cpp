@@ -103,6 +103,7 @@
 
 	plotpad->Draw();
 	ratiopad->Draw();
+	plotpad->RedrawAxis();
 
 	plotpad->cd();
 	//plotpad->RedrawAxis();
@@ -235,7 +236,7 @@
 	hist_data->SetMinimum(0.1);
 	hist_data->GetYaxis()->SetTitle("Number of Events");
 	hist_data->GetYaxis()->SetTitleOffset(0.7);
-	hist_data->GetYaxis()->SetTitleSize(0.08);
+	hist_data->GetYaxis()->SetTitleSize(0.09);
 	if(Var==0)hist_data->GetXaxis()->SetTitle("");
 	if(Var>0) hist_data->GetXaxis()->SetTitle(Variable);
 
@@ -283,8 +284,8 @@
 	hist_Ratio->SetMarkerSize(1.2);
 	hist_Ratio->GetXaxis()->SetTitle(Variable);
 	hist_Ratio->GetYaxis()->SetTitle("Data / MC");
-	hist_Ratio->GetYaxis()->SetTitleSize(0.17);
-	hist_Ratio->GetYaxis()->SetTitleOffset(0.28);
+	hist_Ratio->GetYaxis()->SetTitleSize(0.2);
+	hist_Ratio->GetYaxis()->SetTitleOffset(0.23);
 	hist_Ratio->GetYaxis()->SetLabelSize(0.14);
 	hist_Ratio->GetYaxis()->CenterTitle();
 	hist_Ratio->GetYaxis()->SetNdivisions(6);
