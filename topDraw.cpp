@@ -20,7 +20,7 @@
 	gStyle->SetLabelSize(0.04, "XY");
 
 	gStyle->SetTitleFont(42, "XY");
-	gStyle->SetTitleXOffset(1.2);
+	gStyle->SetTitleXOffset(1);
 	//gStyle->SetTitleYOffset(1.14);
 
 	gStyle->SetAxisColor(1, "XYZ");
@@ -152,9 +152,10 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select one------------------------
+	int StepCount = 5; int ChannelNum = 1;
 	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
-	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
-	int channel_1 = 0, channel_2 = 1, channel_3 = 0, channel_0 = 0;
+	/*int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
+	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;*/
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
@@ -188,7 +189,7 @@
 	dyvar = "dilep.M()";
 
 	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=1"};
+	TString Step_Cut[StepNum] = {"step>=5"};
 
 	TString TCut_base;
 	TString weight_cut;
@@ -197,8 +198,12 @@
 
 	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
+	/*TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 1, 2, 3 -> Dilepton
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//-*///channel = 1, 2, 3 -> Dilepton
+	TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))"};//channel = 1 -> MuEl
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))"};//-*///channel = 1 -> MuEl
+	/*TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 2 -> ElEl
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//-*///channel = 2 -> ElEl
 
 	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
@@ -211,9 +216,9 @@
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_Cut[nChannel] = {"&&channel==2"};
-	/*TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
-	TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
+	TString Channel_Cut[nChannel] = {"&&channel==1"};
+	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
+	/*TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
 	/*TString Channel_txt[nChannel] = {"#mu^{#pm}#mu^{#mp}"};//-*///channel_3
 	/*TString Channel_txt[nChannel] = {"Dilepton"};//-*///1||2||3
 
@@ -642,30 +647,32 @@
 						if(lep1_eta) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
 						if(dilep_m) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
 
-						/*if(nCh==0)*/if(channel_1) if(!(channel==1)) continue;
-						/*if(nCh==1)*/if(channel_2) if(!(channel==2)) continue;
-						/*if(nCh==2)*/if(channel_3) if(!(channel==3)) continue;
-						/*if(nCh==3)*/if(channel_0) if(!(channel==1 || channel==2 || channel==3)) continue;
+						/*if(nCh==0)*/if(ChannelNum == 1) if(!(channel==1)) continue;
+						/*if(nCh==1)*/if(ChannelNum==2) if(!(channel==2)) continue;
+						/*if(nCh==2)*/if(ChannelNum==3) if(!(channel==3)) continue;
+						/*if(nCh==3)*/if(ChannelNum==4) if(!(channel==1 || channel==2 || channel==3)) continue;
 
 						if(!(tri!=0&&filtered==1&&is3lep==2 && lep1->Pt()>20 && (abs(lep1_pid)==11 || abs(lep1_pid)==13))) continue;
 
-						if(tr==0&&channel_1) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
-						if(tr==0&&channel_2) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
+						if(tr==0&&ChannelNum==1) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;//tt-signal
+						if(tr==0&&ChannelNum==2) if(!(partonChannel==2 && (partonMode1==2 && partonMode2==2))) continue;
 
-						if(tr==0&&channel_3) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
+						if(tr==0&&ChannelNum==3) if(!(partonChannel==2 && (partonMode1==1 && partonMode2==1))) continue;
+						if(tr==0&&ChannelNum==4) if(!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))) continue;
 
-						if(tr==1&&channel_1) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
-						if(tr==1&&channel_2) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
-						if(tr==1&&channel_3) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
+						if(tr==1&&ChannelNum==1) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;//tt-others
+						if(tr==1&&ChannelNum==2) if(partonChannel==2 && (partonMode1==2 && partonMode2==2)) continue;
+						if(tr==1&&ChannelNum==3) if(partonChannel==2 && (partonMode1==1 && partonMode2==1)) continue;
+						if(tr==1&&ChannelNum==4) if(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1))) continue;
 
-						if(step_1) if(!(step>=1)) continue;
-						if(step_2) if(!(step>=2)) continue;
-						if(step_3) if(!(step>=3)) continue;
-						if(step_4) if(!(step>=4)) continue;
-						if(step_5) if(!(step>=5)) continue;
+						if(StepCount==1) if(!(step>=1)) continue;
+						if(StepCount==2) if(!(step>=2)) continue;
+						if(StepCount==3) if(!(step>=3)) continue;
+						if(StepCount==4) if(!(step>=4)) continue;
+						if(StepCount==5) if(!(step>=5)) continue;
 
-						if(channel_1) PUeventReweight = puweight*tri;
-						if(channel_2 || channel_3) PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
+						if(ChannelNum==1) PUeventReweight = puweight*tri;
+						if(ChannelNum==2 || ChannelNum==3) PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetBinContent(nbin[NVar]+1,OvFlow);//overflow
 					}
