@@ -16,19 +16,17 @@
 	gStyle->SetPadBorderMode(0);
 
 	gStyle->SetLabelFont(42, "XY");
-	gStyle->SetLabelOffset(0.007, "XY");
+	gStyle->SetLabelOffset(0.006, "XY");
 	gStyle->SetLabelSize(0.04, "XY");
 
 	gStyle->SetTitleFont(42, "XY");
-	gStyle->SetTitleSize(0.06, "X");
-	gStyle->SetTitleSize(0.06, "Y");
 	gStyle->SetTitleXOffset(1.2);
-	gStyle->SetTitleYOffset(1.15);
+	//gStyle->SetTitleYOffset(1.14);
 
 	gStyle->SetAxisColor(1, "XYZ");
 	gStyle->SetTickLength(0.03, "XYZ");
 	gStyle->SetNdivisions(510, "XYZ");
-	gStyle->SetPadTickX(1);  // To get tick marks on the opposite side of the frame
+	gStyle->SetPadTickX(1);// To get tick marks on the opposite side of the frame
 	gStyle->SetPadTickY(1);
 
 	/*gStyle->SetFrameBorderMode(0);
@@ -44,7 +42,7 @@
 	lt1.SetNDC();
 	lt1.SetTextFont(132);
 	lt1.SetTextAngle(0);
-	lt1.SetTextSize(0.045);
+	lt1.SetTextSize(0.065);
 
 	TLatex lt2;
 	lt2.SetTextAlign(12);
@@ -84,7 +82,7 @@
 	float ty = 0.97;
 	//-------------------------Legend coordinate--------------------
 	float lx1 = 0.65;
-	float ly1 = 0.59;
+	float ly1 = 0.54;
 	float lx2 = 0.95;
 	float ly2 = 0.86;
 
@@ -123,7 +121,6 @@
 	TH1F *histo_nReweight_Diboson[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_Zr[StepNum][nVariable][nChannel];
 	TH1F *histo_nReweight_MC[StepNum][nVariable][nChannel];
-
 	TH1F *histo_nReweight_Data[StepNum][nVariable][nChannel];
 
 	//-----------------------------DYEstimation------------------------------------
@@ -148,25 +145,23 @@
 	TString PATH_samples;
 	//PATH_samples = "/xrootd/store/user/yjeong/4TopFullHadronic/";//KISTI
 	//PATH_samples = "/xrootd/store/user/yjeong/TTBarDileptonAnalyzer/TtbarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/yjeong/TtBarDileptonAnalyzer/TtBarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/dhkim/v806_data_sep_v2/TtbarDileptonAnalyzer_";//KISTI
-	PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
-	//PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
+	//PATH_samples = "/xrootd/store/user/dhkim/v808_data_dec/TtbarDileptonAnalyzer_";//KISTI
+	PATH_samples = "/xrootd/store/user/yjeong/v808/v808_";//KISTI
 
 	TString Save_dir;
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select one------------------------
-	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
+	int nVertex = 0, lep1_pt = 0, lep1_eta = 0, dilep_m = 1;//switch 0->1
 	int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
-	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;
+	int channel_1 = 0, channel_2 = 1, channel_3 = 0, channel_0 = 0;
 
 	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
 
-	TString Variable[nVariable] = {"nvertex"};//==================================variable
+	//TString Variable[nVariable] = {"nvertex"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
 	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
-	//TString Variable[nVariable] = {"dilep.M()"};//==================================variable
+	TString Variable[nVariable] = {"dilep.M()"};//==================================variable
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -205,20 +200,20 @@
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 0, 1, 2, 3 -> MuEl, ElEl, MuMu, Dilepton
 
-	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
+	/*TString Ytitle[nVariable] = {"Data / MC ---------------------- Number of Events"};//=====================================variable
 	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
 	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
 	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
 	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
-	/*TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
+	TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
 	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
 
 	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
 	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_Cut[nChannel] = {"&&channel==1"};
-	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
-	/*TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
+	TString Channel_Cut[nChannel] = {"&&channel==2"};
+	/*TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
+	TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
 	/*TString Channel_txt[nChannel] = {"#mu^{#pm}#mu^{#mp}"};//-*///channel_3
 	/*TString Channel_txt[nChannel] = {"Dilepton"};//-*///1||2||3
 
@@ -235,7 +230,7 @@
 		tfile[i] = new TFile(PATH_samples+Sample_name[i]+".root");
 	}
 
-	double tt_powheg_ev = 0;
+	double tt_powheg_gen_ev = 0;
 	TTree *tree[Sample_Num];
 	TH1D *hnevents[Sample_Num];
 	double totevents[Sample_Num];
@@ -243,7 +238,7 @@
 		tree[i] = (TTree*)tfile[i]->Get("cattree/nom");
 		hnevents[i] = (TH1D*)tfile[i]->Get("cattree/nevents");
 		totevents[i] = hnevents[i]->Integral();
-		tt_powheg_ev = totevents[0];
+		tt_powheg_gen_ev = totevents[0];
 		if(i!=1&&i<=10)cout<<Sample_name[i]<<": "<<totevents[i]<<endl;//except tt-others
 		if(i>10)cout<<Sample_name[i]<<": "<<++totevents[i]<<endl;
 		//for(int l1 = 0; l1 < Var_int_size; l1++) tree[i]->SetBranchAddress(Var_int[l1],var_int[l1]);
@@ -276,7 +271,7 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	int nbin[nVariable] = {50};//===================================variable
+	/*int nbin[nVariable] = {50};//===================================variable
 	float xmin[nVariable] = {0};//====================================variable
 	float xmax[nVariable] = {50};//====================================variable
 	float ymin[nVariable] = {10};//====================================variable*/
@@ -291,7 +286,7 @@
 	  float xmax[nVariable] = {2.5};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
 
-	/*int nbin[nVariable] = {60};//===================================variable
+	int nbin[nVariable] = {60};//===================================variable
 	  float xmin[nVariable] = {20};//====================================variable
 	  float xmax[nVariable] = {320};//====================================variable
 	  float ymin[nVariable] = {100};//====================================variable*/
@@ -337,7 +332,7 @@
 				l_[NVar][NStep][nCh]->SetLineWidth(1);
 				l_[NVar][NStep][nCh]->SetFillStyle(1001);
 				l_[NVar][NStep][nCh]->SetTextFont(42);
-				l_[NVar][NStep][nCh]->SetTextSize(0.035);
+				l_[NVar][NStep][nCh]->SetTextSize(0.045);
 
 				plotpad_[NVar][NStep][nCh] = new TPad(Form("title_%d_%d_%d",NVar,NStep,nCh),Form(""),0.02,0.3,0.98,0.98);//x1,y1,x2,y2
 				ratiopad_[NVar][NStep][nCh] = new TPad(Form("ratiotitle_%d_%d_%d",NVar,NStep,nCh),Form(""),0.02,0.1,0.98,0.3);
@@ -560,7 +555,7 @@
 				cout<<"Data_gen: "<<Data_gen<<endl;
 				cout<<"MC_final: "<<MC_final<<endl;
 				cout<<""<<endl;
-				cout<<"(Xsec)Cut Efficiency: "<<Data_final/tt_powheg_ev<<endl;//76755950->nevt
+				cout<<"(Xsec)Cut Efficiency: "<<Data_final/tt_powheg_gen_ev<<endl;//76755950->nevt
 				cout<<""<<endl;
 
 				histo_MC[NVar][NStep][nCh] = new TH1F(Form("histo_MC_%d_%d_%d",NVar,NStep,nCh),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
@@ -633,6 +628,7 @@
 				for(int tr = 0; tr < nMonteCal; tr++){
 					histo_nReweight_MonteCal[NVar][NStep][nCh][tr] = new TH1F(Form("histo_nReweight_%d_%d_%d_%d",NVar,NStep,nCh,tr),Form(""),nbin[NVar],xmin[NVar],xmax[NVar]);
 					cout<<"Reweighted tree event, "<<Sample_name[tr]<<": "<<tree[tr]->GetEntries()<<endl;
+					double OvFlow = histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->GetBinContent(nbin[NVar])+histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->GetBinContent(nbin[NVar]+1);
 					for(int nev = 0; nev < tree[tr]->GetEntries(); nev++){
 
 						if(dilep == NULL ) continue;
@@ -671,6 +667,7 @@
 						if(channel_1) PUeventReweight = puweight*tri;
 						if(channel_2 || channel_3) PUeventReweight = genweight*puweight*mueffweight*eleffweight*tri;
 						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->Fill(single_cut_var[NVar][tr],PUeventReweight);
+						histo_nReweight_MonteCal[NVar][NStep][nCh][tr]->SetBinContent(nbin[NVar]+1,OvFlow);//overflow
 					}
 
 					if(tr == 0){//tt-signal(visible)
@@ -799,7 +796,8 @@
 				if(lep1_pt || lep1_eta || dilep_m)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
 				if(nVertex)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
-				//histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.19);
+				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.07);
+				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleOffset(1);
 				histo_nReweight_Data[NVar][NStep][nCh]->SetMinimum(ymin[NVar]);
 				histo_nReweight_Data[NVar][NStep][nCh]->Draw();
 				hs[NVar][NStep][nCh]->Draw("histsame");
@@ -834,11 +832,14 @@
 				histo_Ratio[NVar][NStep][nCh]->SetMarkerSize(1.2);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitle(Xtitle[NVar]);
 				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitle("Data / MC");
-				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.09);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.17);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetTitleOffset(0.3);
 				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetLabelSize(0.13);
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->CenterTitle();
+				histo_Ratio[NVar][NStep][nCh]->GetYaxis()->SetNdivisions(6);
 				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetLabelSize(0.13);
-				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.16);
-				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.4,1.6,"y");
+				histo_Ratio[NVar][NStep][nCh]->GetXaxis()->SetTitleSize(0.2);
+				histo_Ratio[NVar][NStep][nCh]->SetAxisRange(0.5,1.5,"y");
 				histo_Ratio[NVar][NStep][nCh]->Draw("e");
 				/*auto rp = new TRatioPlot(histo_MC[NVar][NStep][nCh],histo_RealData[NVar][NStep][nCh]);
 				  rp->Draw();
