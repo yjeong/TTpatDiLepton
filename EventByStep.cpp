@@ -76,14 +76,20 @@
 	TString Save_dir;
 	Save_dir = "/afs/cern.ch/work/y/yjeong/catMacro/plots/";
 
-	int Var=4;
+	int InputVar;
+
+	cout << "0=total, 1=M(ll), 2=MET, 3=NJet, 4=NBJet" <<endl;
+	printf("\nenter your Variable: ");
+	scanf("%d",&InputVar);
+
+	int Var=InputVar;//0,1,2,3,4
 
 	TString Variable;
-	if(Var==0)Variable = "";//1
-	if(Var==1)Variable = "M(ll)";//2
-	if(Var==2)Variable = "MET";//3
-	if(Var==3)Variable = "NJet";//4
-	if(Var==4)Variable = "NBJet";//5
+	if(Var==0)Variable = "";
+	if(Var==1)Variable = "M(ll)";
+	if(Var==2)Variable = "MET";
+	if(Var==3)Variable = "NJet";
+	if(Var==4)Variable = "NBJet";
 
 	THStack *hs;
 	TLegend *l_;
@@ -245,8 +251,8 @@
 	hist_data->Draw("esame");
 
 	lt1.DrawLatex(xx_1,yy_1,"e^{#pm}#mu^{#mp}");
-	lt2.DrawLatex(x_1,y_1,"CMS");
-	lt3.DrawLatex(x_2,y_2,"Preliminary");
+	//lt2.DrawLatex(x_1,y_1,"CMS");
+	//lt3.DrawLatex(x_2,y_2,"Preliminary");
 	lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 	l_->Draw();
 
