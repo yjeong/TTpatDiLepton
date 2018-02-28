@@ -79,7 +79,7 @@
 	int InputVar;
 
 	cout << "0=total, 1=M(ll), 2=MET, 3=NJet, 4=NBJet" <<endl;
-	printf("\nenter your Variable: ");
+	printf("enter your Variable: ");
 	scanf("%d",&InputVar);
 
 	int Var=InputVar;//0,1,2,3,4
