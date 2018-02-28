@@ -648,7 +648,7 @@
 						if(NumVar == 3) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
 						if(NumVar == 4) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
 
-						/*if(nCh==0)*/if(ChannelNum == 1) if(!(channel==1)) continue;
+						/*if(nCh==0)*/if(ChannelNum==1) if(!(channel==1)) continue;
 						/*if(nCh==1)*/if(ChannelNum==2) if(!(channel==2)) continue;
 						/*if(nCh==2)*/if(ChannelNum==3) if(!(channel==3)) continue;
 						/*if(nCh==3)*/if(ChannelNum==4) if(!(channel==1 || channel==2 || channel==3)) continue;
