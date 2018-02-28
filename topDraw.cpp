@@ -152,17 +152,13 @@
 	Save_dir = "/cms/scratch/yjeong/catMacro/plots/";
 
 	//---------------------------select one------------------------
-	int StepCount = 5; int ChannelNum = 1;
-	int nVertex = 1, lep1_pt = 0, lep1_eta = 0, dilep_m = 0;//switch 0->1
-	/*int step_1 = 1, step_2 = 0, step_3 = 0, step_4 = 0, step_5 = 0;
-	int channel_1 = 1, channel_2 = 0, channel_3 = 0, channel_0 = 0;*/
+	int StepCount = 5;
+	TString Step_Cut[StepNum] = {"step>=5"};
 
-	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//==================================variable
+	int ChannelNum = 1;
+	int NumVar = 3;//1=Vertex, 2=lep1.Pt, 3=lep1.Eta, 4=dilep.M
 
-	TString Variable[nVariable] = {"nvertex"};//==================================variable
-	//TString Variable[nVariable] = {"lep1.Pt()"};//==================================variable
-	//TString Variable[nVariable] = {"lep1.Eta()"};//==================================variable
-	//TString Variable[nVariable] = {"dilep.M()"};//==================================variable
+	//TString Variable[nVariable] = {"nvertex","dilep.M()","njet","nbjet","pseudottbar.M()"};//
 
 	/*TString Var_int[] = {"nvertex"};
 	  TString Var_float[] = {"met"};
@@ -188,43 +184,68 @@
 	dycut = "*(step1==1)";
 	dyvar = "dilep.M()";
 
-	//TString Step_Cut[StepNum] = {"step>=1","step>=2","step>=3","step>=4","step>=5"};
-	TString Step_Cut[StepNum] = {"step>=5"};
-
 	TString TCut_base;
 	TString weight_cut;
 	TCut_base = "&&tri!=0&&filtered==1&&is3lep==2&&lep1.Pt()>20&&(abs(lep1_pid)==11||abs(lep1_pid)==13)";
 	//TCut_base = "&&tri!=0&&filtered==1&&is3lep==2";
 
-	//TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
-	//TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))","&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))","&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))","&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 0, 1, 2, 3 -> Dileoton, MuEl, ElEl, MuMu
 	/*TString tt_others[nChannel] = {"&&!(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 1, 2, 3 -> Dilepton
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//-*///channel = 1, 2, 3 -> Dilepton
+	  TString tt_signal[nChannel] = {"&&(partonChannel==2 && ((partonMode1==1 && partonMode2==2) || (partonMode1==2 && partonMode2==1)))"};//channel = 1, 2, 3 -> Dilepton
+	  TString Channel_Cut[nChannel] = {"&&channel==1||channel==2||channel==3"};
+	  TString Channel_txt[nChannel] = {"Dilepton"};//-*///1||2||3
+
 	TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==2 && partonMode2==2))"};//channel = 1 -> MuEl
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))"};//-*///channel = 1 -> MuEl
+	  TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==2 && partonMode2==2))"};//channel = 1 -> MuEl
+	  TString Channel_Cut[nChannel] = {"&&channel==1"};
+	  TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
+
 	/*TString tt_others[nChannel] = {"&&!(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 2 -> ElEl
-	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//-*///channel = 2 -> ElEl
+	TString tt_signal[nChannel] = {"&&(partonChannel==2 && (partonMode1==1 && partonMode2==1))"};//channel = 2 -> ElEl
+	TString Channel_Cut[nChannel] = {"&&channel==2"};
+	TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
 
-	TString Ytitle[nVariable] = {"Number of Events"};//=====================================variable
-	TString Xtitle[nVariable] = {"Number of good Vertices"};//========================================variable*/
-	/*TString Ytitle[nVariable] = {"Events"};//=====================================variable
-	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};//========================================variable*/
-	/*TString Ytitle[nVariable] = {"Events / 0.5"};//=====================================variable
-	  TString Xtitle[nVariable] = {"lepton #eta"};//========================================variable*/
-	/*TString Ytitle[nVariable] = {"Events / 5 GeV"};//=====================================variable
-	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//========================================variable*/
+	/*TString tt_others[nChannel] = {"&&!(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 2 -> MuMu
+	  TString tt_signal[nChannel] = {"&&(partonChannel==2 && partonMode==pseudoChannel && partonMode==channel)"};//channel = 2 -> MuMu
+	  TString Channel_Cut[nChannel] = {"&&channel==2"};
+	  TString Channel_txt[nChannel] = {"#mu^{#pm}#mu^{#mp}"};//-*///channel_3
 
-	//TString Channel_Cut[nChannel] = {"&&channel==1","&&channel==2","&&channel==3","&&(channel==1 || channel == 2 || channel == 3)"};//MuEl,ElEl,MuMu, Dilepton;
-	//TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}","e^{#pm}e^{#mp}","#mu^{#pm}#mu^{#mp}","Dilepton"};//MuEl,ElEl,MuMu, Dilepton;
-	TString Channel_Cut[nChannel] = {"&&channel==1"};
-	TString Channel_txt[nChannel] = {"e^{#pm}#mu^{#mp}"};//-*///channel_1
-	/*TString Channel_txt[nChannel] = {"e^{#pm}e^{#mp}"};//-*///channel_2
-	/*TString Channel_txt[nChannel] = {"#mu^{#pm}#mu^{#mp}"};//-*///channel_3
-	/*TString Channel_txt[nChannel] = {"Dilepton"};//-*///1||2||3
+	//**********************************************************
+
+	/*TString Variable[nVariable] = {"nvertex"};
+	  TString Ytitle[nVariable] = {"Number of Events"};
+	  TString Xtitle[nVariable] = {"Number of good Vertices"};
+	  int nbin[nVariable] = {50};
+	  float xmin[nVariable] = {0};
+	  float xmax[nVariable] = {50};
+	  float ymin[nVariable] = {10};//-*/
+
+	/*TString Variable[nVariable] = {"lep1.Pt()"};
+	  TString Ytitle[nVariable] = {"Events"};
+	  TString Xtitle[nVariable] = {"p_{T}^{lep} [GeV]"};
+	  int nbin[nVariable] = {9};
+	  int xmin[nVariable] = {20};
+	  int xmax[nVariable] = {200};
+	  int ymin[nVariable] = {100};//-*/
+
+	TString Variable[nVariable] = {"lep1.Eta()"};
+	TString Ytitle[nVariable] = {"Events / 0.5"};
+	TString Xtitle[nVariable] = {"lepton #eta"};
+	int nbin[nVariable] = {10};
+	float xmin[nVariable] = {-2.5};
+	float xmax[nVariable] = {2.5};
+	float ymin[nVariable] = {100};//-*/
+
+	/*TString Variable[nVariable] = {"dilep.M()"};//
+	  TString Ytitle[nVariable] = {"Events / 5 GeV"};//
+	  TString Xtitle[nVariable] = {"M(ll) [GeV]"};//
+	  int nbin[nVariable] = {60};//
+	  float xmin[nVariable] = {20};//
+	  float xmax[nVariable] = {320};//
+	  float ymin[nVariable] = {100};//-*/
 
 	////////////////////////////////Get Samples/////////////////////////////////
 
-	const int Sample_Num = 13;//=======================================check
+	const int Sample_Num = 13;//=======check
 	TString Sample_name[Sample_Num] = {"TT_powheg","TT_powheg","WJets","SingleTbar_tW","SingleTop_tW","ZZ","WW","WZ","DYJets","DYJets_10to50","MuonEG_Run2016","DoubleEG_Run2016","DoubleMuon_Run2016"};//===============================check
 
 	TString Legend_Name[Sample_Num] = {"t#bar{t}-signal","t#bar{t}-others","W+Jets","Single Top","Single Top","Diboson","Diboson","Diboson","Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}"};//===============================check
@@ -276,27 +297,7 @@
 
 	/////////////////////////////////////////////////////////////////////////////
 
-	int nbin[nVariable] = {50};//===================================variable
-	float xmin[nVariable] = {0};//====================================variable
-	float xmax[nVariable] = {50};//====================================variable
-	float ymin[nVariable] = {10};//====================================variable*/
-
-	/*int nbin[nVariable] = {9};//===================================variable
-	  int xmin[nVariable] = {20};//====================================variable
-	  int xmax[nVariable] = {200};//====================================variable
-	  int ymin[nVariable] = {100};//====================================variable*/
-
-	/*int nbin[nVariable] = {10};//===================================variable
-	  float xmin[nVariable] = {-2.5};//====================================variable
-	  float xmax[nVariable] = {2.5};//====================================variable
-	  float ymin[nVariable] = {100};//====================================variable*/
-
-	/*int nbin[nVariable] = {60};//===================================variable
-	  float xmin[nVariable] = {20};//====================================variable
-	  float xmax[nVariable] = {320};//====================================variable
-	  float ymin[nVariable] = {100};//====================================variable*/
-
-	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======================================check
+	double MonteCal_xsec[nMonteCal] = {831.76, 831.76, 61526.7, 35.85, 35.85, 16.523, 118.7, 47.13, 6025.2, 18610};//======check
 
 	double kMM[nRealData] = {0,};
 	double kEE[nRealData] = {0,};
@@ -346,7 +347,7 @@
 				ratiopad_[NVar][NStep][nCh]->Draw();
 				plotpad_[NVar][NStep][nCh]->cd();
 
-				if(lep1_pt || lep1_eta || dilep_m)plotpad_[NVar][NStep][nCh]->SetLogy();
+				if(NumVar == 2 || NumVar == 3 || NumVar == 4)plotpad_[NVar][NStep][nCh]->SetLogy();
 				plotpad_[NVar][NStep][nCh]->RedrawAxis();
 
 				gPad->SetBottomMargin(0);
@@ -603,7 +604,7 @@
 				  lt4.DrawLatex(tx,ty,"35.9 fb^{-1}, #sqrt{s} = 13 TeV");
 				  l_[NVar][NStep][nCh]->Draw();*/
 
-				const int n = histo_RealData[NVar][NStep][nCh]->GetNbinsX();//============================================>Variable
+				const int n = histo_RealData[NVar][NStep][nCh]->GetNbinsX();//============>Variable
 				double DataBin_ev[n];
 				for(int i = 0; i < n; i++){
 					DataBin_ev[i] = histo_RealData[NVar][NStep][nCh]->GetBinContent(i);
@@ -642,10 +643,10 @@
 
 						tree[tr]->GetEntry(nev);
 
-						if(nVertex) if(NVar==0) {single_cut_var[NVar][tr] = nvertex;}
-						if(lep1_pt) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Pt();}
-						if(lep1_eta) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
-						if(dilep_m) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
+						if(NumVar == 1) if(NVar==0) {single_cut_var[NVar][tr] = nvertex;}
+						if(NumVar == 2) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Pt();}
+						if(NumVar == 3) if(NVar==0) {single_cut_var[NVar][tr] = lep1->Eta();}
+						if(NumVar == 4) if(NVar==0) {single_cut_var[NVar][tr] = dilep->M();}
 
 						/*if(nCh==0)*/if(ChannelNum == 1) if(!(channel==1)) continue;
 						/*if(nCh==1)*/if(ChannelNum==2) if(!(channel==2)) continue;
@@ -800,8 +801,8 @@
 
 				double ymax = 0;
 				ymax = histo_nReweight_Data[NVar][NStep][nCh]->GetMaximum();
-				if(lep1_pt || lep1_eta || dilep_m)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
-				if(nVertex)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
+				if(NumVar == 2 || NumVar == 3 || NumVar == 4)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1000);
+				if(NumVar == 1)histo_nReweight_Data[NVar][NStep][nCh]->SetMaximum(ymax*1.3);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitle(Ytitle[NVar]);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleSize(0.07);
 				histo_nReweight_Data[NVar][NStep][nCh]->GetYaxis()->SetTitleOffset(1);
