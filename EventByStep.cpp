@@ -107,6 +107,7 @@
 	plotpad = new TPad("","",0.02,0.3,0.98,0.98);
 	ratiopad = new TPad("","",0.02,0.1,0.98,0.3);
 
+	plotpad->SetLogy();
 	plotpad->Draw();
 	ratiopad->Draw();
 	plotpad->RedrawAxis();
@@ -238,8 +239,9 @@
 
 	double ymax = 0;
 	ymax = hist_data->GetMaximum();
-	hist_data->SetMaximum(ymax*1.3);
-	hist_data->SetMinimum(0.1);
+	//hist_data->SetMaximum(ymax*1.3);
+	hist_data->SetMaximum(ymax*10000);
+	hist_data->SetMinimum(100);
 	hist_data->GetYaxis()->SetTitle("Number of Events");
 	hist_data->GetYaxis()->SetTitleOffset(0.7);
 	hist_data->GetYaxis()->SetTitleSize(0.09);
@@ -289,7 +291,7 @@
 	hist_Ratio->SetMarkerStyle(20);
 	hist_Ratio->SetMarkerSize(1.2);
 	hist_Ratio->GetXaxis()->SetTitle(Variable);
-	hist_Ratio->GetYaxis()->SetTitle("Data / MC");
+	hist_Ratio->GetYaxis()->SetTitle("MC / Data");
 	hist_Ratio->GetYaxis()->SetTitleSize(0.2);
 	hist_Ratio->GetYaxis()->SetTitleOffset(0.23);
 	hist_Ratio->GetYaxis()->SetLabelSize(0.14);
@@ -301,4 +303,5 @@
 	hist_Ratio->Draw("e");
 
 	c1->SaveAs(Save_dir+Variable+"_EventByStep.png");
+	//c1->SaveAs(Save_dir+Variable+"_EventByStep.root");
 }
