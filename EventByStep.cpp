@@ -220,20 +220,33 @@
 	hist_data->SetMarkerSize(1.1);
 	hist_data->SetMarkerStyle(20);
 
-	l_->AddEntry(hist_sig,"t#bar{t}","f");
+	/*l_->AddEntry(hist_sig,"t#bar{t}","f");
 	l_->AddEntry(hist_wjet,"W+jet","f");
 	l_->AddEntry(hist_STop,"Single Top","f");
 	l_->AddEntry(hist_Diboson,"Diboson","f");
 	l_->AddEntry(hist_DY,"Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}","f");
+	l_->AddEntry(hist_data,"data","lp");*/
+
 	l_->AddEntry(hist_data,"data","lp");
+	l_->AddEntry(hist_DY,"Z/#gamma^{*}#rightarrow#font[12]{l#lower[-0.4]{+}l#lower[-0.4]{#font[122]{\55}}}","f");
+	l_->AddEntry(hist_Diboson,"Diboson","f");
+	l_->AddEntry(hist_STop,"Single Top","f");
+	l_->AddEntry(hist_wjet,"W+jet","f");
+	l_->AddEntry(hist_sig,"t#bar{t}","f");
 
 	hs = new THStack();
 
-	hs->Add(hist_DY);
+	/*hs->Add(hist_DY);
 	hs->Add(hist_Diboson);
 	hs->Add(hist_STop);
 	hs->Add(hist_wjet);
+	hs->Add(hist_sig);*/
+
 	hs->Add(hist_sig);
+	hs->Add(hist_wjet);
+	hs->Add(hist_STop);
+	hs->Add(hist_Diboson);
+	hs->Add(hist_DY);
 
 	plotpad->cd();
 
