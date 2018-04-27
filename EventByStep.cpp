@@ -305,8 +305,8 @@
 	hist_Ratio->SetMarkerSize(1.2);
 	hist_Ratio->GetXaxis()->SetTitle(Variable);
 	hist_Ratio->GetYaxis()->SetTitle("MC / Data");
-	hist_Ratio->GetYaxis()->SetTitleSize(0.2);
-	hist_Ratio->GetYaxis()->SetTitleOffset(0.23);
+	hist_Ratio->GetYaxis()->SetTitleSize(0.25);
+	hist_Ratio->GetYaxis()->SetTitleOffset(0.25);
 	hist_Ratio->GetYaxis()->SetLabelSize(0.14);
 	hist_Ratio->GetYaxis()->CenterTitle();
 	hist_Ratio->GetYaxis()->SetNdivisions(6);
